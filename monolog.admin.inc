@@ -5,6 +5,8 @@
  * Administrative settings for the Monolog module.
  */
 
+use Monolog\Logger;
+
 /**
  * Returns an array of profile options.
  *
@@ -472,10 +474,10 @@ function monolog_handler_form($form, &$form_state, stdClass $profile, array $han
 
   if ($form['#is_new']) {
     $handler = array(
-      'name' => '',
-      'label' => '',
       'handler' => $handler_name,
-      'options' => $handler_info['default settings'],
+      'label' => '',
+      'level' => Logger::INFO,
+      'weight' => 1,
     );
   }
 
@@ -496,7 +498,7 @@ function monolog_handler_form($form, &$form_state, stdClass $profile, array $han
 
   $form['name'] = array(
     '#type' => 'machine_name',
-    '#default_value' => $handler['name'],
+    '#default_value' => $form['#is_new'] ? '' : arg(7),
     '#maxlength' => 32,
     '#machine_name' => array(
       'exists' => 'monolog_profile_load',
@@ -509,12 +511,15 @@ function monolog_handler_form($form, &$form_state, stdClass $profile, array $han
   $form['level'] = array(
     '#title' => 'Logging level',
     '#type' => 'select',
-    '#default_value' => $handler['options']['level'],
+    '#default_value' => $handler['level'],
     '#options' => monolog_level_options(),
     '#description' => t('The minimum severity level of logged messages.'),
   );
 
   if (isset($handler_info['settings form'])) {
+    if (isset($handler_info['default settings'])) {
+      $handler += $handler_info['default settings'];
+    }
     if (function_exists($handler_info['settings form'])) {
       $handler_info['settings form']($form, $form_state, $profile, $handler);
     }
@@ -528,10 +533,14 @@ function monolog_handler_form($form, &$form_state, stdClass $profile, array $han
     '#type' => 'actions',
   );
 
-  $form['submit'] = array(
+  $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save handler'),
   );
+
+    $form['actions']['cancel'] = array(
+      '#markup' => l(t('Cancel'), 'admin/config/development/monolog/profile/' . $profile->name),
+    );
 
   $form['#submit'] = array('monolog_handler_form_submit');
 
@@ -556,7 +565,7 @@ function monolog_handler_form_submit($form, &$form_state) {
       throw new \RuntimeException(t('Error saving handler.'));
     }
 
-    $form_state['redirect'] = 'admin/config/development/monolog/profile/list/' . $profile->name . '/edit';
+    $form_state['redirect'] = 'admin/config/development/monolog/profile/' . $profile->name;
     $message = $form['#is_new'] ? t('Configuration saved.') : t('Configuration updated.');
     drupal_set_message($message);
 

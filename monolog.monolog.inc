@@ -7,7 +7,6 @@
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler;
-use Monolog\Logger;
 
 /**
  * Implements hook_monolog_channel_info().
@@ -36,7 +35,6 @@ function monolog_monolog_handler_info() {
     'loader callback' => 'monolog_stream_handler_loader',
     'settings form' => 'monolog_stream_handler_settings',
     'default settings' => array(
-      'level' => Logger::INFO,
       'filepath' => 'public://monolog/drupal.log',
     ),
   );
@@ -47,7 +45,6 @@ function monolog_monolog_handler_info() {
     'loader callback' => 'monolog_syslog_handler_loader',
     'settings form' => 'monolog_syslog_handler_settings',
     'default settings' => array(
-      'level' => Logger::INFO,
       'ident' => 'drupal',
     ),
   );
@@ -81,7 +78,7 @@ function monolog_stream_handler_settings(&$form, &$form_state, $profile, array $
   $form['filepath'] = array(
     '#title' => 'Log file path',
     '#type' => 'textfield',
-    '#default_value' => $handler['options']['filepath'],
+    '#default_value' => $handler['filepath'],
     '#description' => t('The path or URI that the log file will be written to.'),
   );
 }
@@ -102,7 +99,7 @@ function monolog_syslog_handler_settings(&$form, &$form_state, $profile, array $
   $form['ident'] = array(
     '#title' => t('Identity string'),
     '#type' => 'textfield',
-    '#default_value' => $handler['options']['ident'],
+    '#default_value' => $handler['ident'],
     '#description' => t('The string ident is added to each message.'),
   );
 }

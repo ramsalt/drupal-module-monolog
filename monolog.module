@@ -102,19 +102,18 @@ function monolog_menu() {
     'type' => MENU_NORMAL_ITEM,
   ) + $base_item;
 
-//
-//  $items[$base_path . '/profile/%monolog_profile/handler/add/%monolog_handler_info'] = array(
-//    'title' => 'Configure handler',
-//    'page callback' => 'drupal_get_form',
-//    'page arguments' => array('monolog_handler_form', 5),
-//  ) + $base_item;
-//
-//  $items[$base_path . '/profile/list/%monolog_profile/handler/%monolog_handler/edit'] = array(
-//    'title' => 'Configure handler',
-//    'page callback' => 'drupal_get_form',
-//    'page arguments' => array('monolog_handler_form', 5, 8),
-//    'laod arguments' => array(5),
-//  ) + $base_item;
+  $items[$base_path . '/profile/%monolog_profile/handler/add/%monolog_handler_info'] = array(
+    'title' => 'Configure handler',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('monolog_handler_form', 5),
+  ) + $base_item;
+
+  $items[$base_path . '/profile/%monolog_profile/handler/%monolog_handler/edit'] = array(
+    'title' => 'Configure handler',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('monolog_handler_form', 5, 7),
+    'load arguments' => array(5),
+  ) + $base_item;
 
   return $items;
 }
