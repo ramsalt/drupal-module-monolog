@@ -1,0 +1,7 @@
+name = Monolog
+description = Integrates with the Monolog library.
+dependencies[] = composer_manager
+dependencies[] = ctools
+core = 7.x
+package = Development
+configure = admin/config/development/monolog
