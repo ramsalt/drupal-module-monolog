@@ -120,13 +120,6 @@ function monolog_menu() {
 }
 
 /**
- * Implements hook_menu_alter().
- */
-//function monolog_menu_alter(&$items) {
-//  $items['admin/config/development/monolog/profile']['type'] = MENU_LOCAL_TASK;
-//}
-
-/**
  * Implements hook_theme().
  */
 function monolog_theme() {
@@ -150,15 +143,6 @@ function monolog_ctools_plugin_api($owner, $api) {
     return array('version' => 1);
   }
 }
-
-/**
- * Implements hook_ctools_plugin_directory().
- */
-//function monolog_ctools_plugin_directory($module, $type) {
-//  if ('export_ui' == $type) {
-//    return 'plugins/export_ui';
-//  }
-//}
 
 /**
  * Factory function for Monolog loggers.
