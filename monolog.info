@@ -3,5 +3,6 @@ description = Integrates with the Monolog library.
 dependencies[] = composer_manager
 dependencies[] = ctools
 core = 7.x
+php = 5.3
 package = Development
 configure = admin/config/development/monolog
