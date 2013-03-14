@@ -214,6 +214,7 @@ function monolog_profile_page() {
  */
 function monolog_profile_form($form, &$form_state, $profile = null) {
   $form['#is_new'] = (null === $profile);
+  $base_path = 'admin/config/development/monolog/profile';
 
   if ($form['#is_new']) {
     $profile = monolog_profile_new();
@@ -252,7 +253,6 @@ function monolog_profile_form($form, &$form_state, $profile = null) {
 
   if (!$form['#is_new']) {
 
-    $base_path = 'admin/config/development/monolog/profile';
     $link = l(t('Add handler'), $base_path . '/' . $profile->name . '/handler/add');
     $form['action_link'] = array(
       '#markup' => '<ul class="action-links"><li>' . $link . '</li></ul>',
@@ -286,18 +286,18 @@ function monolog_profile_form($form, &$form_state, $profile = null) {
         '#options' => monolog_level_options(),
       );
     }
-
-    $form['actions']['submit'] = array(
-      '#type' => 'submit',
-      '#value' => t('Save profile'),
-    );
-
-    $form['actions']['cancel'] = array(
-      '#markup' => l(t('Cancel'), $base_path),
-    );
-
-    $form['#submit'][] = 'monolog_profile_form_submit';
   }
+
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save profile'),
+  );
+
+  $form['actions']['cancel'] = array(
+    '#markup' => l(t('Cancel'), $base_path),
+  );
+
+  $form['#submit'][] = 'monolog_profile_form_submit';
 
   return $form;
 }
@@ -413,10 +413,57 @@ function theme_monolog_handler_table(array $variables) {
     'caption' => t('Logging Handlers'),
     'header' => $header,
     'rows' => $rows,
+    'empty' => t('This profile has no handlers. Add one by clicking the "Add handler" link above.'),
     'attributes' => array('id' => 'monolog-handler-table'),
   ));
 
   return $output;
+}
+
+/**
+ * Deletes or reverts a profile configuration.
+ *
+ * @param stdClass $profile
+ *   The profile being deleted.
+ *
+ * @see monolog_profile_delete_form_submit()
+ *
+ * @ingroup forms
+ */
+function monolog_profile_delete_form($form, &$form_state, $profile) {
+  $form['#monolog'] = array(
+    'profile' => $profile,
+  );
+
+  $args = array('%label' => $profile->options['label']);
+  $prompt = t('Are you sure you want to remove the %label profile?', $args);
+  $cancel_path = 'admin/config/development/monolog/profile';
+  $warning = t('This action cannot be undone.');
+
+  return confirm_form($form, $prompt, $cancel_path, $warning, t('Delete'), t('Cancel'));
+}
+
+/**
+ * Form submission handler for monolog_profile_delete_form().
+ */
+function monolog_profile_delete_form_submit($form, &$form_state) {
+  if ($form_state['values']['confirm']) {
+    $profile = $form['#monolog']['profile'];
+    $args = array('%label' => $profile->options['label']);
+    if (monolog_profile_delete($profile)) {
+      drupal_set_message(t('The %label profile has been removed.', $args));
+    } else {
+      drupal_set_message(t('Error removing the %label profile.', $args), 'error');
+    }
+  }
+  $form_state['redirect'] = 'admin/config/development/monolog/profile';
+}
+
+/**
+ *
+ */
+function monolog_profile_export_form($form, &$form_state) {
+
 }
 
 /**
@@ -432,33 +479,6 @@ function monolog_profile_import_form($form, &$form_state) {
 function monolog_profile_export_page($profile) {
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /**
  * Page callback; Lists the handlers than can be added.
@@ -605,4 +625,53 @@ function monolog_handler_form_submit($form, &$form_state) {
     form_set_error(NULL, $e->getMessage());
     watchdog_exception('monolog', $e);
   }
+}
+
+/**
+ * Removes a handler from the logging profile.
+ *
+ * @param stdClass $profile
+ *   The logging profile configuration.
+ * @param array $handler
+ *   The configuration options specific to the handler being edited.
+ *
+ * @see monolog_handler_delete_form_submit()
+ *
+ * @ingroup forms
+ */
+function monolog_handler_delete_form($form, &$form_state, stdClass $profile, array $handler = null) {
+  $form['#monolog'] = array(
+    'profile' => $profile,
+    'handler' => $handler,
+    'handler_name' => arg(7),
+  );
+
+  $args = array('%label' => $handler['label']);
+  $prompt = t('Are you sure you want to remove the %label handler?', $args);
+  $cancel_path = 'admin/config/development/monolog/profile/' . $profile->name . '/edit';
+  $warning = t('This action cannot be undone.');
+
+  return confirm_form($form, $prompt, $cancel_path, $warning, t('Delete'), t('Cancel'));
+}
+
+/**
+ * Form submission handler for monolog_handler_delete_form().
+ */
+function monolog_handler_delete_form_submit($form, &$form_state) {
+  if ($form_state['values']['confirm']) {
+
+    $profile = $form['#monolog']['profile'];
+    $handler = $form['#monolog']['handler'];
+    $name = $form['#monolog']['handler_name'];
+
+    unset($profile->options['handlers'][$name]);
+
+    $args = array('%label' => $handler['label']);
+    if (monolog_profile_save($profile)) {
+      drupal_set_message(t('The %label handler has been removed.', $args));
+    } else {
+      drupal_set_message(t('Error removing the %label handler.', $args), 'error');
+    }
+  }
+  $form_state['redirect'] = 'admin/config/development/monolog/profile/' . $profile->name . '/edit';
 }

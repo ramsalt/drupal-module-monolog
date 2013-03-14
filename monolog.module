@@ -115,6 +115,14 @@ function monolog_menu() {
     'load arguments' => array(5),
   ) + $base_item;
 
+  $items[$base_path . '/profile/%monolog_profile/handler/%monolog_handler/delete'] = array(
+    'title' => 'Delete',
+    'description' => 'Remove a handler from the profile',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('monolog_handler_delete_form', 5, 7),
+    'load arguments' => array(5),
+  ) + $base_item;
+
   return $items;
 }
 
