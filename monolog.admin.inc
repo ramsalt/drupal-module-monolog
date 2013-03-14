@@ -302,7 +302,7 @@ function monolog_profile_form($form, &$form_state, $profile = null) {
         '#default_value' => $handler['bubble'],
         '#options' => array(
           1 => t('Yes'),
-          2 => t('No'),
+          0 => t('No'),
         ),
       );
 
