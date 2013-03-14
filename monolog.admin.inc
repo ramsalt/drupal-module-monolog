@@ -287,6 +287,25 @@ function monolog_profile_form($form, &$form_state, $profile = null) {
 
     foreach ($profile->options['handlers'] as $name => $handler) {
 
+      $form['channel_table']['level'][$name] = array(
+        '#type' => 'select',
+        '#title' => t('Logging level for @handler', array('@handler' => $handler['label'])),
+        '#title_display' => 'invisible',
+        '#default_value' => $handler['level'],
+        '#options' => monolog_level_options(),
+      );
+
+      $form['channel_table']['bubble'][$name] = array(
+        '#type' => 'select',
+        '#title' => t('Bubble setting for @handler', array('@handler' => $handler['label'])),
+        '#title_display' => 'invisible',
+        '#default_value' => $handler['bubble'],
+        '#options' => array(
+          1 => t('Yes'),
+          2 => t('No'),
+        ),
+      );
+
       $form['channel_table']['weight'][$name] = array(
         '#type' => 'select',
         '#title' => t('Weight for @handler', array('@handler' => $handler['label'])),
@@ -294,14 +313,6 @@ function monolog_profile_form($form, &$form_state, $profile = null) {
         '#options' => drupal_map_assoc(range(-10, 10)),
         '#default_value' => $handler['weight'],
         '#attributes' => array('class' => array('monolog-handler-weight')),
-      );
-
-      $form['channel_table']['level'][$name] = array(
-        '#type' => 'select',
-        '#title' => t('Logging level for @handler', array('@handler' => $handler['label'])),
-        '#title_display' => 'invisible',
-        '#default_value' => $handler['level'],
-        '#options' => monolog_level_options(),
       );
     }
   }
@@ -316,7 +327,7 @@ function monolog_profile_form($form, &$form_state, $profile = null) {
   );
 
   $form['actions']['cancel'] = array(
-    '#markup' => l(t('Cancel'), $base_path),
+    '#markup' => l(t('Go back to profile page'), $base_path),
   );
 
   $form['#submit'][] = 'monolog_profile_form_submit';
@@ -334,7 +345,7 @@ function monolog_profile_form_submit($form, &$form_state) {
   unset($form_state['values']['name']);
 
   // Add weight and label from the table.
-  $keys = array('weight', 'level');
+  $keys = array('level', 'bubble', 'weight');
   foreach ($keys as $key) {
     if (isset($form_state['values']['channel_table'][$key])) {
       foreach ($form_state['values']['channel_table'][$key] as $handler_name => $weight) {
@@ -381,6 +392,7 @@ function theme_monolog_handler_table(array $variables) {
     t('Label'),
     t('Handler'),
     t('Log Level'),
+    t('Bubble Messages'),
     t('Weight'),
     t('Operations'),
   );
@@ -402,6 +414,7 @@ function theme_monolog_handler_table(array $variables) {
       'label' => check_plain($handler['label']),
       'handler' => check_plain($handler_info[$handler['handler']]['label']),
       'level' => drupal_render($variables['element']['level'][$name]),
+      'bubble' => drupal_render($variables['element']['bubble'][$name]),
       'weight' => drupal_render($variables['element']['weight'][$name]),
     );
 
