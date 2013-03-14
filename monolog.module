@@ -183,7 +183,9 @@ function monolog($channel_name) {
 
       $logger = new Logger($channel_name);
 
-      foreach ($profile->options['handlers'] as $handler_config) {
+      // Reverse the handlers since they are pushed onto the stack.
+      $handlers = array_reverse($profile->options['handlers']);
+      foreach ($handlers as $handler_config) {
 
         $handler_info = monolog_handler_info_load($handler_config['handler']);
         if (!$handler_info) {
