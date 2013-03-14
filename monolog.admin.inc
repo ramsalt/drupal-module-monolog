@@ -288,6 +288,10 @@ function monolog_profile_form($form, &$form_state, $profile = null) {
     }
   }
 
+  $form['actions'] = array(
+    '#type' => '#actions',
+  );
+
   $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save profile'),
@@ -491,6 +495,10 @@ function monolog_handler_page($profile) {
 
   $base_path = 'admin/config/development/monolog/profile/' . $profile->name;
 
+  $breadcrumb = drupal_get_breadcrumb();
+  $breadcrumb[] = l($profile->options['label'], $base_path);
+  drupal_set_breadcrumb($breadcrumb);
+
   // @todo Theme function.
   $output = '<dl>';
   foreach ($handler_info as $name => $info) {
@@ -502,6 +510,10 @@ function monolog_handler_page($profile) {
 
   $build['handlers'] = array(
     '#markup' => $output,
+  );
+
+  $build['cancel'] = array(
+    '#markup' => l(t('Cancel'), $base_path . '/edit'),
   );
 
   return $build;
@@ -589,9 +601,9 @@ function monolog_handler_form($form, &$form_state, stdClass $profile, array $han
     '#value' => t('Save handler'),
   );
 
-    $form['actions']['cancel'] = array(
-      '#markup' => l(t('Cancel'), 'admin/config/development/monolog/profile/' . $profile->name),
-    );
+  $form['actions']['cancel'] = array(
+    '#markup' => l(t('Cancel'), 'admin/config/development/monolog/profile/' . $profile->name),
+  );
 
   $form['#submit'] = array('monolog_handler_form_submit');
 
