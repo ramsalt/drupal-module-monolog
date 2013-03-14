@@ -24,6 +24,23 @@ function monolog_profile_options() {
 }
 
 /**
+ * Returns the handlers associated with a profile.
+ *
+ * @return array
+ */
+function monolog_get_profile_handlers($profile) {
+  $profile_handlers = array();
+  $handler_info = monolog_handler_info_load_all();
+  foreach ($profile->options['handlers'] as $handler) {
+    if (!isset($handler_info[$handler['handler']])) {
+      $handler_info[$handler['handler']] = array('label' => $handler['handler']);
+    }
+    $profile_handlers[$handler['handler']] = $handler_info[$handler['handler']]['label'];
+  }
+  return $profile_handlers;
+}
+
+/**
  * Channel settings for the Monolog module.
  *
  * @ingroup forms
@@ -153,7 +170,7 @@ function monolog_profile_page() {
 
     $row = array(
       'profile' => $label . ' ' . $machine_name,
-      'handlers' => '',
+      'handlers' => join(', ', array_map('check_plain', monolog_get_profile_handlers($profile))),
     );
 
     $operations = array();
