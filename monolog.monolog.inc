@@ -8,6 +8,7 @@
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler;
 use Monolog\Handler\ChromePHPHandler;
+use Monolog\Handler\FirePHPHandler;
 
 /**
  * Implements hook_monolog_channel_info().
@@ -54,6 +55,12 @@ function monolog_monolog_handler_info() {
     'label' => t('ChromePHP Handler'),
     'description' => t('Handler for ChromePHP, providing inline console messages within Chrome.'),
     'loader callback' => 'monolog_chromephp_handler_loader',
+  );
+
+  $handlers['firephp'] = array(
+    'label' => t('FirePHP Handler'),
+    'description' => t('Handler for FirePHP, providing inline console messages within FireBug.'),
+    'loader callback' => 'monolog_firephp_handler_loader',
   );
 
   return $handlers;
@@ -118,6 +125,15 @@ function monolog_syslog_handler_settings(&$form, &$form_state, $profile, array $
  */
 function monolog_chromephp_handler_loader($options) {
   return new ChromePHPHandler($options['level'], $options['bubble']);
+}
+
+/**
+ * Monolog loader callback; Loads a FirePHPHandler handler.
+ *
+ * @return HandlerInterface
+ */
+function monolog_firephp_handler_loader($options) {
+  return new FirePHPHandler($options['level'], $options['bubble']);
 }
 
 /**
