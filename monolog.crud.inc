@@ -24,7 +24,7 @@ function monolog_profile_load_all() {
     ctools_include('export');
     $profiles = ctools_export_crud_load_all('monolog_profile');
     foreach ($profiles as $name => $profile) {
-      uksort($profile->options['handlers'], 'drupal_sort_weight');
+      uasort($profile->options['handlers'], 'drupal_sort_weight');
     }
   }
   return $profiles;
@@ -59,7 +59,7 @@ function monolog_profile_load($name) {
   if (!isset($profiles[$name])) {
     ctools_include('export');
     if ($profiles[$name] = ctools_export_crud_load('monolog_profile', $name)) {
-      uksort($profiles[$name]->options['handlers'], 'drupal_sort_weight');
+      uasort($profiles[$name]->options['handlers'], 'drupal_sort_weight');
     }
   }
   return $profiles[$name] ?: FALSE;

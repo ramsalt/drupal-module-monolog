@@ -292,7 +292,7 @@ function monolog_profile_form($form, &$form_state, $profile = null) {
         '#title' => t('Weight for @handler', array('@handler' => $handler['label'])),
         '#title_display' => 'invisible',
         '#options' => drupal_map_assoc(range(-10, 10)),
-        '#default_value' => isset($handler['weight']) ? $handler['weight'] : 0,
+        '#default_value' => $handler['weight'],
         '#attributes' => array('class' => array('monolog-handler-weight')),
       );
 
@@ -354,7 +354,7 @@ function monolog_profile_form_submit($form, &$form_state) {
       throw new Exception(t('Error saving logging profile configuration.'));
     }
 
-    $form_state['redirect'] = 'admin/config/development/monolog/profile';
+    $form_state['redirect'] = 'admin/config/development/monolog/profile/' . $name . '/edit';
     $message = $form['#is_new'] ? t('Configuration saved.') : t('Configuration updated.');
     drupal_set_message($message);
 
@@ -566,6 +566,11 @@ function monolog_handler_form($form, &$form_state, stdClass $profile, array $han
   $form['#monolog'] = array(
     'profile' => $profile,
     'handler_name' => $handler_name,
+  );
+
+  $form['weight'] = array(
+    '#type' => 'value',
+    '#value' => $handler['weight'],
   );
 
   $form['label'] = array(
