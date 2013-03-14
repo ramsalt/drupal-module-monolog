@@ -7,6 +7,7 @@
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler;
+use Monolog\Handler\ChromePHPHandler;
 
 /**
  * Implements hook_monolog_channel_info().
@@ -47,6 +48,12 @@ function monolog_monolog_handler_info() {
     'default settings' => array(
       'ident' => 'drupal',
     ),
+  );
+
+  $handlers['chromephp'] = array(
+    'label' => t('ChromePHP Handler'),
+    'description' => t('Handler for ChromePHP, providing inline console messages within Chrome.'),
+    'loader callback' => 'monolog_chromephp_handler_loader',
   );
 
   return $handlers;
@@ -102,6 +109,15 @@ function monolog_syslog_handler_settings(&$form, &$form_state, $profile, array $
     '#default_value' => $handler['ident'],
     '#description' => t('The string ident is added to each message.'),
   );
+}
+
+/**
+ * Monolog loader callback; Loads a ChromePHPHandler handler.
+ *
+ * @return HandlerInterface
+ */
+function monolog_chromephp_handler_loader($options) {
+  return new ChromePHPHandler($options['level']);
 }
 
 /**
