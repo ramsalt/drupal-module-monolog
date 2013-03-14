@@ -268,6 +268,7 @@ function monolog_profile_form($form, &$form_state, $profile = null) {
     );
 
     foreach ($profile->options['handlers'] as $name => $handler) {
+
       $form['channel_table']['weight'][$name] = array(
         '#type' => 'select',
         '#title' => t('Weight for @handler', array('@handler' => $handler['label'])),
@@ -275,6 +276,14 @@ function monolog_profile_form($form, &$form_state, $profile = null) {
         '#options' => drupal_map_assoc(range(-10, 10)),
         '#default_value' => isset($handler['weight']) ? $handler['weight'] : 0,
         '#attributes' => array('class' => array('monolog-handler-weight')),
+      );
+
+      $form['channel_table']['level'][$name] = array(
+        '#type' => 'select',
+        '#title' => t('Logging level for @handler', array('@handler' => $handler['label'])),
+        '#title_display' => 'invisible',
+        '#default_value' => $handler['level'],
+        '#options' => monolog_level_options(),
       );
     }
 
@@ -302,13 +311,18 @@ function monolog_profile_form_submit($form, &$form_state) {
   $name = $form_state['values']['name'];
   unset($form_state['values']['name']);
 
-  // Add the weights to the handlers if set.
-  if (isset($form_state['values']['channel_table']['weight'])) {
-    foreach ($form_state['values']['channel_table']['weight'] as $handler_name => $weight) {
-      $form_state['values']['handlers'][$handler_name]['weight'] = $weight;
+  // Add weight and label from the table.
+  $keys = array('weight', 'level');
+  foreach ($keys as $key) {
+    if (isset($form_state['values']['channel_table'][$key])) {
+      foreach ($form_state['values']['channel_table'][$key] as $handler_name => $weight) {
+        $form_state['values']['handlers'][$handler_name][$key] = $weight;
+      }
     }
-    unset($form_state['values']['channel_table']);
   }
+
+  // Removes the raw values passed through the tables.
+  unset($form_state['values']['channel_table']);
 
   $profile->name = $name;
   $profile->options = $form_state['values'];
@@ -365,7 +379,7 @@ function theme_monolog_handler_table(array $variables) {
     $row = array(
       'label' => check_plain($handler['label']),
       'handler' => check_plain($handler_info[$handler['handler']]['label']),
-      'level' => $level_options[$handler['level']],
+      'level' => drupal_render($variables['element']['level'][$name]),
       'weight' => drupal_render($variables['element']['weight'][$name]),
     );
 
