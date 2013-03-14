@@ -75,7 +75,7 @@ function monolog_stream_handler_loader($options) {
     }
   }
 
-  return new StreamHandler($options['filepath'], $options['level']);
+  return new StreamHandler($options['filepath'], $options['level'], $options['bubble']);
 }
 
 /**
@@ -96,7 +96,7 @@ function monolog_stream_handler_settings(&$form, &$form_state, $profile, array $
  * @return HandlerInterface
  */
 function monolog_syslog_handler_loader($options) {
-  return new SyslogHandler($options['ident'], LOG_USER, $options['level']);
+  return new SyslogHandler($options['ident'], LOG_USER, $options['level'], $options['bubble']);
 }
 
 /**
@@ -117,7 +117,7 @@ function monolog_syslog_handler_settings(&$form, &$form_state, $profile, array $
  * @return HandlerInterface
  */
 function monolog_chromephp_handler_loader($options) {
-  return new ChromePHPHandler($options['level']);
+  return new ChromePHPHandler($options['level'], $options['bubble']);
 }
 
 /**
@@ -138,6 +138,7 @@ function monolog_default_monolog_profiles() {
         'label' => 'Log file',
         'filepath' => 'public://monolog/drupal.log',
         'level' => 200,
+        'bubble' => 1,
         'weight' => -50,
       ),
     ),

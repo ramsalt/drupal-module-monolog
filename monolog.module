@@ -196,6 +196,7 @@ function monolog($channel_name) {
           throw new \InvalidArgumentException($message);
         }
 
+        $handler_config['bubble'] = (bool) $handler_config['bubble'];
         $handler = $handler_info['loader callback']($handler_config);
         $logger->pushHandler($handler);
       }

@@ -558,6 +558,7 @@ function monolog_handler_form($form, &$form_state, stdClass $profile, array $han
       'handler' => $handler_name,
       'label' => '',
       'level' => Logger::INFO,
+      'bubble' => 1,
       'weight' => 1,
     );
   }
@@ -590,11 +591,18 @@ function monolog_handler_form($form, &$form_state, stdClass $profile, array $han
   );
 
   $form['level'] = array(
-    '#title' => 'Logging level',
+    '#title' => t('Logging level'),
     '#type' => 'select',
     '#default_value' => $handler['level'],
     '#options' => monolog_level_options(),
     '#description' => t('The minimum severity level of logged messages.'),
+  );
+
+  $form['bubble'] = array(
+    '#title' => 'Allow messages to bubble up to the next handler in the stack.',
+    '#type' => 'checkbox',
+    '#default_value' => $handler['bubble'],
+    '#description' => t('If unckecked, messages processed by this handler will be blocked from being handled by the subsequent handlers in the stack.'),
   );
 
   if (isset($handler_info['settings form'])) {
