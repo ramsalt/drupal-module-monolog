@@ -8,6 +8,24 @@
 use Monolog\Logger;
 
 /**
+ * Returns the logging level options.
+ *
+ * @return array
+ */
+function monolog_level_options() {
+  return array(
+    Logger::DEBUG => t('Debug'),
+    Logger::INFO => t('Info'),
+    Logger::NOTICE => t('Notice'),
+    Logger::WARNING => t('Warning'),
+    Logger::ERROR => t('Error'),
+    Logger::CRITICAL => t('Critical'),
+    Logger::ALERT => t('Alert'),
+    Logger::EMERGENCY => t('Emergency'),
+  );
+}
+
+/**
  * Returns an array of profile options.
  *
  * @return array
