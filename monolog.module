@@ -183,7 +183,8 @@ function monolog($channel_name) {
 
       $logger = new Logger($channel_name);
 
-      // Reverse the handlers since they are pushed onto the stack.
+      // Reverse the handlers since they are pushed onto the stack. This allows
+      // handlers at the top of the table to be processed first.
       $handlers = array_reverse($profile->options['handlers']);
       foreach ($handlers as $handler_config) {
 
