@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Integrates with the Monolog library.
+ * A Framework and UI for integrating with the Monolog library.
  */
 
 use Monolog\Logger;
@@ -54,6 +54,7 @@ function monolog_menu() {
     'description' => 'Configure logging channels.',
     'page callback' => 'monolog_profile_page',
     'type' => MENU_LOCAL_TASK,
+    'weight' => -5,
   ) + $base_item;
 
   $items[$base_path . '/profile/add'] = array(

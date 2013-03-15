@@ -1,5 +1,5 @@
 name = Monolog
-description = Integrates with the Monolog library.
+description = A Framework and UI for integrating with the Monolog library.
 dependencies[] = composer_manager
 dependencies[] = ctools
 core = 7.x

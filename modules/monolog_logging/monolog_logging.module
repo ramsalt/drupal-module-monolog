@@ -1,0 +1,116 @@
+<?php
+
+/**
+ * @file
+ * Integrates Drupal's internal logging system with Monolog by routing watchdog
+ * messages to Monolog channels.
+ */
+
+use Monolog\Logger;
+
+/**
+ * Implements hook_menu().
+ */
+function monolog_logging_menu() {
+  $items = array();
+
+  $items['admin/config/development/monolog/watchdog'] = array(
+    'title' => 'Watchdog Settings',
+    'description' => 'Configure watchdog type mappings and context settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('monolog_logging_watchdog_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'monolog_logging.admin.inc',
+    'weight' => 10,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function monolog_logging_theme() {
+  return array(
+    'monolog_logging_map_table' => array(
+      'render element' => 'element',
+      'file' => 'monolog_logging.admin.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_monolog_channel_info().
+ */
+function monolog_logging_monolog_channel_info() {
+  $channels = array();
+
+  $channels['watchdog'] = array(
+    'label' => t('Watchdog'),
+    'description' => t('Default channel for all watchdog messages.'),
+    'default profile' => 'syslog',
+  );
+
+  return $channels;
+}
+
+/**
+ * Implements hook_watchdog().
+ */
+function monolog_logging_watchdog(array $log_entry) {
+  try {
+    $logger = monolog('watchdog');
+    $context = array_intersect_key($log_entry, monolog_logging_get_contexts());
+    $message = strip_tags(!isset($log_entry['variables']) ? $log_entry['message'] : strtr($log_entry['message'], $log_entry['variables']));
+    $level = monolog_logging_map_severity_level($log_entry['severity']);
+    $logger->log($level, $message, $context);
+  }
+  catch (Exception $e) {
+    // Fail silently since we cannot log any messages or do anything that would
+    // trigger another watchdog call.
+  }
+}
+
+/**
+ * Maps a Watchdog severity level to Monolog severity levels.
+ *
+ * @param string $level
+ *   The Watchdog severity level.
+ *
+ * @return int
+ *   The Monolog severity level.
+ */
+function monolog_logging_map_severity_level($level) {
+  $levels = array(
+    WATCHDOG_DEBUG => Logger::DEBUG,
+    WATCHDOG_INFO => Logger::INFO,
+    WATCHDOG_NOTICE => Logger::NOTICE,
+    WATCHDOG_WARNING => Logger::WARNING,
+    WATCHDOG_ERROR => Logger::ERROR,
+    WATCHDOG_CRITICAL => Logger::CRITICAL,
+    WATCHDOG_ALERT => Logger::ALERT,
+    WATCHDOG_EMERGENCY => Logger::EMERGENCY,
+  );
+  return isset($levels[$level]) ? $levels[$level] : Logger::NOTICE;
+}
+
+/**
+ * Returns the selected event contexts.
+ *
+ * @return array
+ */
+function monolog_logging_get_contexts() {
+  static $contexts = array();
+  if (!$contexts) {
+    $contexts = array_filter(variable_get('monolog_logging_contexts', array(
+      'type' => 'type',
+      'uid' => 'uid',
+      'request_uri' => 'request_uri',
+      'referer' => 'referer',
+      'ip' => 'ip',
+      'link' => 'link',
+    )));
+  }
+  return $contexts;
+}

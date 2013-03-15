@@ -7,23 +7,9 @@
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler;
+use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\ChromePHPHandler;
 use Monolog\Handler\FirePHPHandler;
-
-/**
- * Implements hook_monolog_channel_info().
- */
-function monolog_monolog_channel_info() {
-  $channels = array();
-
-  $channels['development'] = array(
-    'label' => t('Development'),
-    'description' => t('Logging channel for development actions.'),
-    'default profile' => 'file',
-  );
-
-  return $channels;
-}
 
 /**
  * Implements hook_monolog_handler_info().
@@ -38,6 +24,17 @@ function monolog_monolog_handler_info() {
     'settings form' => 'monolog_stream_handler_settings',
     'default settings' => array(
       'filepath' => 'public://monolog/drupal.log',
+    ),
+  );
+
+  $handlers['rotating_file'] = array(
+    'label' => t('Rotating File Handler'),
+    'description' => t('Logs records to a file and creates one logfile per day. It will also delete files older than the "Max Files" settings.'),
+    'loader callback' => 'monolog_rotating_file_handler_loader',
+    'settings form' => 'monolog_rotating_file_handler_settings',
+    'default settings' => array(
+      'filepath' => 'public://monolog/drupal.log',
+      'max_files' => 0,
     ),
   );
 
@@ -72,16 +69,9 @@ function monolog_monolog_handler_info() {
  * @return HandlerInterface
  */
 function monolog_stream_handler_loader($options) {
-
-  // Make sure the directory exists and is private.
   $directory = dirname($options['filepath']);
-  if (!is_dir($directory)) {
-    drupal_mkdir($directory, NULL, TRUE);
-    if (0 === strpos($directory, 'public://')) {
-      file_create_htaccess($directory, TRUE);
-    }
-  }
-
+  file_prepare_directory($directory);
+  file_create_htaccess($directory, TRUE);
   return new StreamHandler($options['filepath'], $options['level'], $options['bubble']);
 }
 
@@ -94,6 +84,39 @@ function monolog_stream_handler_settings(&$form, &$form_state, $profile, array $
     '#type' => 'textfield',
     '#default_value' => $handler['filepath'],
     '#description' => t('The path or URI that the log file will be written to.'),
+  );
+}
+
+/**
+ * Monolog loader callback; Loads a RotatingFileHandler handler.
+ *
+ * @return HandlerInterface
+ */
+function monolog_rotating_file_handler_loader($options) {
+  $directory = dirname($options['filepath']);
+  file_prepare_directory($directory);
+  file_create_htaccess($directory, TRUE);
+  return new RotatingFileHandler($options['filepath'], $options['max_files'], $options['level'], $options['bubble']);
+}
+
+/**
+ * Monolog settings form; Settings for the RotatingFileHandler handler.
+ */
+function monolog_rotating_file_handler_settings(&$form, &$form_state, $profile, array $handler) {
+
+  $form['filepath'] = array(
+    '#title' => t('Log file path'),
+    '#type' => 'textfield',
+    '#default_value' => $handler['filepath'],
+    '#description' => t('The path or URI that the log file will be written to.'),
+  );
+
+  $form['max_files'] = array(
+    '#title' => t('Maximum number of files'),
+    '#type' => 'textfield',
+    '#default_value' => $handler['max_files'],
+    '#description' => t('The maximal amount of files to keep (0 means unlimited).'),
+    '#size' => 4,
   );
 }
 
@@ -141,6 +164,25 @@ function monolog_firephp_handler_loader($options) {
  */
 function monolog_default_monolog_profiles() {
   $profiles = array();
+
+  $profile = new stdClass();
+  $profile->disabled = FALSE;
+  $profile->api_version = 1;
+  $profile->name = 'syslog';
+  $profile->options = array(
+    'label' => 'Syslog',
+    'handlers' => array(
+      'syslog' => array(
+        'handler' => 'syslog',
+        'label' => 'Syslog',
+        'ident' => 'drupal',
+        'level' => 200,
+        'bubble' => 1,
+        'weight' => -50,
+      ),
+    ),
+  );
+  $profiles[$profile->name] = $profile;
 
   $profile = new stdClass();
   $profile->disabled = FALSE;

@@ -1,0 +1,6 @@
+name = Monolog Logging
+description = Integrates Drupal's internal logging system with Monolog by routing watchdog messages to Monolog channels.
+dependencies[] = monolog
+core = 7.x
+php = 5.3
+package = Development

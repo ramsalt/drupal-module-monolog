@@ -132,7 +132,7 @@ function theme_monolog_channel_table(array $variables) {
 
   $header = array(
     'channel' => t('Channel'),
-    'profile' => t('Profile'),
+    'profile' => t('Logging Profile'),
   );
 
   $rows = array();
@@ -155,6 +155,7 @@ function theme_monolog_channel_table(array $variables) {
     'caption' => t('Logging Channels'),
     'header' => $header,
     'rows' => $rows,
+    'empty' => t('There are no available logging channels.'),
     'attributes' => array('id' => 'monolog-channel-table'),
   ));
 
@@ -191,6 +192,10 @@ function monolog_profile_page() {
       'handlers' => join(', ', array_map('check_plain', monolog_get_profile_handlers($profile))),
     );
 
+    if (empty($row['handlers'])) {
+      $row['handlers'] = '<em>No handlers</em>';
+    }
+
     $operations = array();
     $operations[] = array(
       'title' => t('Edit'),
@@ -215,6 +220,7 @@ function monolog_profile_page() {
   $build['profiles'] = array(
     '#theme' => 'table',
     '#caption' => t('Logging profiles'),
+    '#empty' => t('There are no logging channels. Add one by clicking the "Add channel" link above.'),
     '#header' => $header,
     '#rows' => $rows,
   );
@@ -323,7 +329,7 @@ function monolog_profile_form($form, &$form_state, $profile = null) {
 
   $form['actions']['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Save profile'),
+    '#value' => t('Save logging profile'),
   );
 
   $form['actions']['cancel'] = array(
@@ -569,7 +575,7 @@ function monolog_handler_form($form, &$form_state, stdClass $profile, array $han
   if ($form['#is_new']) {
     $handler = array(
       'handler' => $handler_name,
-      'label' => '',
+      'label' => $handler_info['label'],
       'level' => Logger::INFO,
       'bubble' => 1,
       'weight' => 1,
@@ -627,13 +633,7 @@ function monolog_handler_form($form, &$form_state, stdClass $profile, array $han
     if (isset($handler_info['default settings'])) {
       $handler += $handler_info['default settings'];
     }
-    if (function_exists($handler_info['settings form'])) {
-      $handler_info['settings form']($form, $form_state, $profile, $handler);
-    }
-    else {
-      $args = array('@function' => $handler_info['settings form']);
-      watchdog('monolog', 'Function not defined: @function', $args, WATCHDOG_ERROR);
-    }
+    $handler_info['settings form']($form, $form_state, $profile, $handler);
   }
 
   $form['actions'] = array(
