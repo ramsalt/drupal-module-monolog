@@ -115,7 +115,7 @@ function monolog_channel_form_submit($form, &$form_state) {
     $channel_profiles[$name] = $channel['profile'];
   }
   variable_set('monolog_channel_profiles', $channel_profiles);
-  drupal_set_message(t('Configuation updated.'));
+  drupal_set_message(t('The configuration options have been saved.'));
 }
 
 /**
@@ -219,7 +219,7 @@ function monolog_profile_page() {
 
   $build['profiles'] = array(
     '#theme' => 'table',
-    '#caption' => t('Logging profiles'),
+    '#caption' => t('Logging Profiles'),
     '#empty' => t('There are no logging channels. Add one by clicking the "Add channel" link above.'),
     '#header' => $header,
     '#rows' => $rows,
@@ -368,12 +368,11 @@ function monolog_profile_form_submit($form, &$form_state) {
 
   try {
     if (!monolog_profile_save($profile)) {
-      throw new Exception(t('Error saving logging profile configuration.'));
+      throw new Exception(t('Error saving logging profile.'));
     }
 
     $form_state['redirect'] = 'admin/config/development/monolog/profile/' . $name . '/edit';
-    $message = $form['#is_new'] ? t('Configuration saved.') : t('Configuration updated.');
-    drupal_set_message($message);
+    drupal_set_message(t('The configuration options have been saved.'));
 
   }
   catch (Exception $e) {
@@ -511,7 +510,10 @@ function monolog_profile_export_form($form, &$form_state) {
  *
  */
 function monolog_profile_import_form($form, &$form_state) {
-
+  $form['message'] = array(
+    '#markup' => t('To be implemented. See <a href="@url">@url</a>.', array('@url' => url('http://drupal.org/node/1943146'))),
+  );
+  return $form;
 }
 
 /**
@@ -673,8 +675,7 @@ function monolog_handler_form_submit($form, &$form_state) {
     }
 
     $form_state['redirect'] = 'admin/config/development/monolog/profile/' . $profile->name;
-    $message = $form['#is_new'] ? t('Configuration saved.') : t('Configuration updated.');
-    drupal_set_message($message);
+    drupal_set_message(t('The configuration options have been saved.'));
 
   }
   catch (Exception $e) {
