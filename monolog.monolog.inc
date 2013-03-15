@@ -168,9 +168,9 @@ function monolog_default_monolog_profiles() {
   $profile = new stdClass();
   $profile->disabled = FALSE;
   $profile->api_version = 1;
-  $profile->name = 'syslog';
+  $profile->name = 'production';
   $profile->options = array(
-    'label' => 'Syslog',
+    'label' => 'Production',
     'handlers' => array(
       'syslog' => array(
         'handler' => 'syslog',
@@ -187,9 +187,9 @@ function monolog_default_monolog_profiles() {
   $profile = new stdClass();
   $profile->disabled = FALSE;
   $profile->api_version = 1;
-  $profile->name = 'file';
+  $profile->name = 'development';
   $profile->options = array(
-    'label' => 'Log file',
+    'label' => 'Development',
     'handlers' => array(
       'stream_handler' => array(
         'handler' => 'stream_handler',

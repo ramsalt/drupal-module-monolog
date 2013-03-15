@@ -48,8 +48,8 @@ function monolog_logging_monolog_channel_info() {
 
   $channels['watchdog'] = array(
     'label' => t('Watchdog'),
-    'description' => t('Default channel for all watchdog messages.'),
-    'default profile' => 'syslog',
+    'description' => t('The default channel that watchdog messages are routed through.'),
+    'default profile' => 'production',
   );
 
   return $channels;
