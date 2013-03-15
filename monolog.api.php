@@ -14,7 +14,9 @@ use Monolog\Handler\HandlerInterface;
  */
 
 /**
- * Define monolog channels.
+ * Defines monolog channels.
+ *
+ * A channel identifies which part of the application a record is related to.
  */
 function hook_monolog_channel_info() {
   $channels = array();
@@ -28,7 +30,42 @@ function hook_monolog_channel_info() {
 }
 
 /**
- * Define monolog handlers.
+ * Contains default profile configurations.
+ *
+ * A profile is a collection of handlers that process the record.
+ */
+function hook_default_monolog_profiles() {
+  $profiles = array();
+
+  $profile = new stdClass();
+  $profile->disabled = FALSE;
+  $profile->api_version = 1;
+  $profile->name = 'syslog';
+  $profile->options = array(
+    'label' => 'Syslog',
+    'handlers' => array(
+      'syslog' => array(
+        'handler' => 'syslog',
+        'label' => 'Syslog',
+        'ident' => 'drupal',
+        'level' => 200,
+        'bubble' => 1,
+        'weight' => -50,
+      ),
+    ),
+  );
+  $profiles[$profile->name] = $profile;
+
+  return $profiles;
+}
+
+/**
+ * Defines monolog handlers.
+ *
+ * Handlers process the records and write them to various sources such as files
+ * remote servers, sockets, etc.
+ *
+ * @see https://github.com/Seldaek/monolog#handlers
  */
 function hook_monolog_handler_info() {
   $handlers = array();
