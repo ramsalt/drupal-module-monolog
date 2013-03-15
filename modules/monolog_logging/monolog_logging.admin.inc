@@ -16,8 +16,8 @@ function monolog_logging_watchdog_settings_form($form, &$form_state) {
 
   $form['monolog_logging_contexts'] = array(
     '#type' => 'checkboxes',
-    '#title' => t('Event Contexts'),
-    '#description' => t('Include the selected contexts in all log messages.'),
+    '#title' => t('Include contexts in record'),
+    '#description' => t('Include the selected contexts in all log messages that are routed through Monolog from <code>watchdog()</code>.'),
     '#options' => array(
       'type' => t('The type of message for this entry.'),
       'uid' => t('The user ID for the user who was logged in when the event happened.'),

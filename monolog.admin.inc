@@ -628,7 +628,7 @@ function monolog_handler_form($form, &$form_state, stdClass $profile, array $han
     '#title' => 'Allow messages to bubble up to the next handler in the stack.',
     '#type' => 'checkbox',
     '#default_value' => $handler['bubble'],
-    '#description' => t('If unckecked, messages processed by this handler will be blocked from being handled by the subsequent handlers in the stack.'),
+    '#description' => t('If unckecked, messages processed by this handler will be blocked from being processed by the subsequent handlers in the stack.'),
   );
 
   if (isset($handler_info['settings form'])) {
