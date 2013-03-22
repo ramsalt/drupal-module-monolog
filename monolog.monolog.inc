@@ -64,14 +64,30 @@ function monolog_monolog_handler_info() {
 }
 
 /**
+ * Helper function that prepares a directory for logging.
+ *
+ * @param string $directory
+ *   The URI to the directory containing the log files.
+ *
+ * @throws \InvalidArgumentException
+ */
+function monolog_prepare_log_dir($directory) {
+  if (!file_prepare_directory($directory, FILE_CREATE_DIRECTORY)) {
+    throw new \InvalidArgumentException(t('Error creating directory: @dir', array('@dir' => $directory)));
+  }
+  if (0 === strpos($directory, 'public://')) {
+    file_create_htaccess($directory, TRUE);
+  }
+}
+
+/**
  * Monolog loader callback; Loads a StreamHandler handler.
  *
  * @return HandlerInterface
  */
 function monolog_stream_handler_loader($options) {
   $directory = dirname($options['filepath']);
-  file_prepare_directory($directory);
-  file_create_htaccess($directory, TRUE);
+  monolog_prepare_log_dir($directory);
   return new StreamHandler($options['filepath'], $options['level'], $options['bubble']);
 }
 
@@ -94,8 +110,7 @@ function monolog_stream_handler_settings(&$form, &$form_state, $profile, array $
  */
 function monolog_rotating_file_handler_loader($options) {
   $directory = dirname($options['filepath']);
-  file_prepare_directory($directory);
-  file_create_htaccess($directory, TRUE);
+  monolog_prepare_log_dir($directory);
   return new RotatingFileHandler($options['filepath'], $options['max_files'], $options['level'], $options['bubble']);
 }
 
