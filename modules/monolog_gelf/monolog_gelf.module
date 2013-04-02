@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * @file
+ * Logs records to a Graylog2 server.
+ */
+
+// Nothing to do ...

@@ -1,0 +1,6 @@
+name = Monolog GELF
+description = Logs records to a Graylog2 server.
+dependencies[] = monolog
+core = 7.x
+php = 5.3
+package = Development
