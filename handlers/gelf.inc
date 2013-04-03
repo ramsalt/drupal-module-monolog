@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Monolog FirePHPHandler include.
+ * Handler include for FirePHPHandler.
  */
 
 use Monolog\Handler\GelfHandler;

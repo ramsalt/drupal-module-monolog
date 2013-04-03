@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Monolog StreamHandler include.
+ * Handler include for StreamHandler include.
  */
 
 use Monolog\Handler\StreamHandler;

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Monolog SyslogHandler include.
+ * Handler include for SyslogHandler.
  */
 
 use Monolog\Handler\SyslogHandler;

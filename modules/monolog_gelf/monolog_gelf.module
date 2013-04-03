@@ -8,7 +8,7 @@
 /**
  * Implements hook_monolog_handler_info().
  *
- * The handler include is places in the core module's handler directory so that
+ * The handler include is placed in the core module's handler directory so that
  * we don't have multiple handler directories.
  */
 function monolog_gelf_monolog_handler_info() {

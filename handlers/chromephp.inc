@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Monolog ChromePHPHandler include.
+ * Handler include for ChromePHPHandler.
  */
 
 use Monolog\Handler\ChromePHPHandler;

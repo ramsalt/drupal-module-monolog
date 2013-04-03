@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Monolog StreamHandler include.
+ * Handler include for StreamHandler.
  */
 
 use Monolog\Handler\RotatingFileHandler;
