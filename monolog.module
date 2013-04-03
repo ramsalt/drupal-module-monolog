@@ -95,7 +95,6 @@ function monolog_menu() {
     'description' => 'Delete a logging profile',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('monolog_profile_delete_form', 5),
-    'type' => MENU_LOCAL_TASK,
   ) + $base_item;
 
   $items[$base_path . '/profile/%monolog_profile/handler/add'] = array(
@@ -103,7 +102,6 @@ function monolog_menu() {
     'description' => 'Add a logging handler to the profile.',
     'page callback' => 'monolog_handler_page',
     'page arguments' => array(5),
-    'type' => MENU_NORMAL_ITEM,
   ) + $base_item;
 
   $items[$base_path . '/profile/%monolog_profile/handler/add/%monolog_handler_info'] = array(
