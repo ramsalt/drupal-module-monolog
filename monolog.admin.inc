@@ -545,7 +545,7 @@ function monolog_handler_page($profile) {
   // @todo Theme function.
   $output = '<dl>';
   foreach ($grouped_handlers as $group => $handlers) {
-    $output .= '<h2>' . check_plain($group) . '</h2>';
+    $output .= '<h3>' . check_plain($group) . '</h3>';
     foreach ($handlers as $handler_name => $handler_info) {
       $path = $base_path . '/handler/add/' . $handler_name;
       $output .= '<dt>' . l($handler_info['label'], $path) . '</dt>';
