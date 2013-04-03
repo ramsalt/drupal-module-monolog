@@ -18,7 +18,7 @@ function monolog_monolog_handler_path() {
 function monolog_monolog_handler_info() {
   $handlers = array();
 
-  $handlers['stream_handler'] = array(
+  $handlers['stream'] = array(
     'label' => t('Stream Handler'),
     'description' => t('Logs records into any PHP stream, use this for log files.'),
     'loader callback' => 'monolog_stream_handler_loader',
@@ -96,8 +96,8 @@ function monolog_default_monolog_profiles() {
   $profile->options = array(
     'label' => 'Development',
     'handlers' => array(
-      'stream_handler' => array(
-        'handler' => 'stream_handler',
+      'stream' => array(
+        'handler' => 'stream',
         'label' => 'Log file',
         'filepath' => 'public://monolog/drupal.log',
         'level' => 200,

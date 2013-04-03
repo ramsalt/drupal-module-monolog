@@ -23,7 +23,7 @@ function hook_monolog_channel_info() {
 
   $channels['search'] = array(
     'label' => t('Search'),
-    'default profile' => 'stream_handler',
+    'default profile' => 'stream',
   );
 
   return $channels;
@@ -35,7 +35,7 @@ function hook_monolog_channel_info() {
  * Each include file inside of the directory contains a handler's "loader
  * callback" and "settings callback" functions. The file will be autoloaded if
  * the filename is the machine name of the handler with a ".inc" suffix, for
- * example "stream_handler.inc".
+ * example "stream.inc" for the "stream" handler.
  *
  * The directory is relative to the module's root.
  *
@@ -86,7 +86,7 @@ function hook_default_monolog_profiles() {
 function hook_monolog_handler_info() {
   $handlers = array();
 
-  $handlers['stream_handler'] = array(
+  $handlers['stream'] = array(
     'label' => t('Stream Handler'),
     'description' => t('Logs records into any PHP stream, use this for log files.'),
     'loader callback' => 'mymodule_stream_handler_loader',
