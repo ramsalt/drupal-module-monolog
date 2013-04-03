@@ -559,7 +559,7 @@ function monolog_handler_page($profile) {
 }
 
 /**
- * Handler settings form.
+ * Handler settings callback.
  *
  * @param stdClass $profile
  *   The logging profile configuration.
@@ -632,11 +632,11 @@ function monolog_handler_form($form, &$form_state, stdClass $profile, array $han
   );
 
   monolog_load_handler_include($handler_info);
-  if (isset($handler_info['settings form'])) {
+  if (isset($handler_info['settings callback'])) {
     if (isset($handler_info['default settings'])) {
       $handler += $handler_info['default settings'];
     }
-    $handler_info['settings form']($form, $form_state, $profile, $handler);
+    $handler_info['settings callback']($form, $form_state, $profile, $handler);
   }
 
   $form['actions'] = array(

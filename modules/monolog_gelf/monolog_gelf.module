@@ -15,7 +15,7 @@ function monolog_gelf_monolog_handler_info() {
     'label' => t('GELF Handler'),
     'description' => t('Logs records to a Graylog2 server.'),
     'loader callback' => 'monolog_gelf_handler_loader',
-    'settings form' => 'monolog_gelf_handler_settings',
+    'settings callback' => 'monolog_gelf_handler_settings',
     'handler file' => drupal_get_path('module', 'monolog') . '/handlers/gelf.inc',
     'default settings' => array(
       'hostname' => '',
