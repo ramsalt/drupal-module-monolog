@@ -333,7 +333,7 @@ function monolog_profile_form($form, &$form_state, $profile = null) {
   );
 
   $form['actions']['cancel'] = array(
-    '#markup' => l(t('Go back to profile page'), $base_path),
+    '#markup' => l(t('Go back to logging profiles page'), $base_path),
   );
 
   $form['#submit'][] = 'monolog_profile_form_submit';
@@ -559,7 +559,7 @@ function monolog_handler_page($profile) {
   );
 
   $build['cancel'] = array(
-    '#markup' => l(t('Cancel'), $base_path),
+    '#markup' => l(t('Go back to profile edit page'), $base_path),
   );
 
   return $build;
