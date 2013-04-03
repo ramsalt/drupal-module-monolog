@@ -21,6 +21,7 @@ function monolog_monolog_handler_info() {
   $handlers['stream'] = array(
     'label' => t('Stream Handler'),
     'description' => t('Logs records into any PHP stream, use this for log files.'),
+    'group' => t('Files and syslog'),
     'default settings' => array(
       'filepath' => 'public://monolog/drupal.log',
     ),
@@ -29,6 +30,7 @@ function monolog_monolog_handler_info() {
   $handlers['rotating_file'] = array(
     'label' => t('Rotating File Handler'),
     'description' => t('Logs records to a file and creates one logfile per day. It will also delete files older than the "Max Files" settings.'),
+    'group' => t('Files and syslog'),
     'default settings' => array(
       'filepath' => 'public://monolog/drupal.log',
       'max_files' => 0,
@@ -38,6 +40,7 @@ function monolog_monolog_handler_info() {
   $handlers['syslog'] = array(
     'label' => t('Syslog Handler'),
     'description' => t('Logs records to the syslog.'),
+    'group' => t('Files and syslog'),
     'default settings' => array(
       'ident' => 'drupal',
     ),
@@ -46,6 +49,7 @@ function monolog_monolog_handler_info() {
   $handlers['native_mailer'] = array(
     'label' => t('Native Mail Handler'),
     'description' => t('Sends emails using PHP\'s <code>mail()</code> function.'),
+    'group' => t('Alerts and emails'),
     'default settings' => array(
       'to' => '<site-mail>',
       'from' => '<site-mail>',
@@ -56,12 +60,14 @@ function monolog_monolog_handler_info() {
   $handlers['chromephp'] = array(
     'label' => t('ChromePHP Handler'),
     'description' => t('Handler for ChromePHP, providing inline console messages within Chrome.'),
+    'group' => t('Development'),
     'settings callback' => FALSE,
   );
 
   $handlers['firephp'] = array(
     'label' => t('FirePHP Handler'),
     'description' => t('Handler for FirePHP, providing inline console messages within FireBug.'),
+    'group' => t('Development'),
     'settings callback' => FALSE,
   );
 

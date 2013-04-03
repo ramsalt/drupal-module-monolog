@@ -529,8 +529,12 @@ function monolog_profile_export_page($profile) {
 function monolog_handler_page($profile) {
   $build = array();
 
+  $grouped_handlers = array();
   composer_manager_register_autoloader();
-  $handler_info = monolog_handler_info_load_all();
+  $handlers = monolog_handler_info_load_all();
+  foreach ($handlers as $handler_name => $handler_info) {
+    $grouped_handlers[$handler_info['group']][$handler_name] = $handler_info;
+  }
 
   $base_path = 'admin/config/development/monolog/profile/' . $profile->name;
 
@@ -540,10 +544,13 @@ function monolog_handler_page($profile) {
 
   // @todo Theme function.
   $output = '<dl>';
-  foreach ($handler_info as $name => $info) {
-    $path = $base_path . '/handler/add/' . $name;
-    $output .= '<dt>' . l($info['label'], $path) . '</dt>';
-    $output .= '<dd>' . filter_xss_admin($info['description']) . '</dd>';
+  foreach ($grouped_handlers as $group => $handlers) {
+    $output .= '<h2>' . check_plain($group) . '</h2>';
+    foreach ($handlers as $handler_name => $handler_info) {
+      $path = $base_path . '/handler/add/' . $handler_name;
+      $output .= '<dt>' . l($handler_info['label'], $path) . '</dt>';
+      $output .= '<dd>' . filter_xss_admin($handler_info['description']) . '</dd>';
+    }
   }
   $output .= '</dl>';
 

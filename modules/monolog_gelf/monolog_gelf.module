@@ -18,6 +18,7 @@ function monolog_gelf_monolog_handler_info() {
     'label' => t('GELF Handler'),
     'description' => t('Logs records to a Graylog2 server.'),
     'handler file' => drupal_get_path('module', 'monolog') . '/handlers/gelf.inc',
+    'group' => t('Servers and networked logging'),
     'default settings' => array(
       'hostname' => '',
       'port' => 12201,
