@@ -253,3 +253,16 @@ function monolog_load_handler_include(array $handler_info) {
     }
   }
 }
+
+/**
+ * Returns a unique identifier for the page request or PHP process.
+ *
+ * @return string
+ */
+function monolog_request_id() {
+  static $request_id = FALSE;
+  if (!$request_id) {
+    $request_id = uniqid();
+  }
+  return $request_id;
+}

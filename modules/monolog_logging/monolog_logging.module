@@ -61,7 +61,13 @@ function monolog_logging_monolog_channel_info() {
 function monolog_logging_watchdog(array $log_entry) {
   try {
     $logger = monolog('watchdog');
-    $context = array_intersect_key($log_entry, monolog_logging_get_contexts());
+
+    $enabled_contexts = monolog_logging_get_contexts();
+    $context = array_intersect_key($log_entry, $enabled_contexts);
+    if (isset($enabled_contexts['request_id'])) {
+      $context['request_id'] = monolog_request_id();
+    }
+
     $message = strip_tags(!isset($log_entry['variables']) ? $log_entry['message'] : strtr($log_entry['message'], $log_entry['variables']));
     $level = monolog_logging_map_severity_level($log_entry['severity']);
     $logger->log($level, $message, $context);
@@ -110,6 +116,7 @@ function monolog_logging_get_contexts() {
       'referer' => 'referer',
       'ip' => 'ip',
       'link' => 'link',
+      'request_id' => 'request_id',
     )));
   }
   return $contexts;

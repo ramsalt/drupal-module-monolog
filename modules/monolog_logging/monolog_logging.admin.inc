@@ -25,6 +25,7 @@ function monolog_logging_watchdog_settings_form($form, &$form_state) {
       'referer' => t('The page that referred the user to the page where the event occurred.'),
       'ip' => t('The IP address where the request for the page came from.'),
       'link' => t('An optional link provided by the module that called the watchdog() function.'),
+      'request_id' => t('A unique identifier for the page request or PHP process to logically group log messages.'),
     ),
     '#default_value' => variable_get('monolog_logging_contexts', array(
       'type' => 'type',
