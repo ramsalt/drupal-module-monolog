@@ -5,11 +5,12 @@
  * Monolog hook implementations.
  */
 
-use Monolog\Handler\StreamHandler;
-use Monolog\Handler\SyslogHandler;
-use Monolog\Handler\RotatingFileHandler;
-use Monolog\Handler\ChromePHPHandler;
-use Monolog\Handler\FirePHPHandler;
+/**
+ * Implements hook_monolog_handler_path().
+ */
+function monolog_monolog_handler_path() {
+  return 'handlers';
+}
 
 /**
  * Implements hook_monolog_handler_info().
@@ -61,117 +62,6 @@ function monolog_monolog_handler_info() {
   );
 
   return $handlers;
-}
-
-/**
- * Helper function that prepares a directory for logging.
- *
- * @param string $directory
- *   The URI to the directory containing the log files.
- *
- * @throws \InvalidArgumentException
- */
-function monolog_prepare_log_dir($directory) {
-  if (!file_prepare_directory($directory, FILE_CREATE_DIRECTORY)) {
-    throw new \InvalidArgumentException(t('Error creating directory: @dir', array('@dir' => $directory)));
-  }
-  if (0 === strpos($directory, 'public://')) {
-    file_create_htaccess($directory, TRUE);
-  }
-}
-
-/**
- * Monolog loader callback; Loads a StreamHandler handler.
- *
- * @return HandlerInterface
- */
-function monolog_stream_handler_loader($options) {
-  $directory = dirname($options['filepath']);
-  monolog_prepare_log_dir($directory);
-  return new StreamHandler($options['filepath'], $options['level'], $options['bubble']);
-}
-
-/**
- * Monolog settings form; Settings for the StreamHandler handler.
- */
-function monolog_stream_handler_settings(&$form, &$form_state, $profile, array $handler) {
-  $form['filepath'] = array(
-    '#title' => 'Log file path',
-    '#type' => 'textfield',
-    '#default_value' => $handler['filepath'],
-    '#description' => t('The path or URI that the log file will be written to.'),
-  );
-}
-
-/**
- * Monolog loader callback; Loads a RotatingFileHandler handler.
- *
- * @return HandlerInterface
- */
-function monolog_rotating_file_handler_loader($options) {
-  $directory = dirname($options['filepath']);
-  monolog_prepare_log_dir($directory);
-  return new RotatingFileHandler($options['filepath'], $options['max_files'], $options['level'], $options['bubble']);
-}
-
-/**
- * Monolog settings form; Settings for the RotatingFileHandler handler.
- */
-function monolog_rotating_file_handler_settings(&$form, &$form_state, $profile, array $handler) {
-
-  $form['filepath'] = array(
-    '#title' => t('Log file path'),
-    '#type' => 'textfield',
-    '#default_value' => $handler['filepath'],
-    '#description' => t('The path or URI that the log file will be written to.'),
-  );
-
-  $form['max_files'] = array(
-    '#title' => t('Maximum number of files'),
-    '#type' => 'textfield',
-    '#default_value' => $handler['max_files'],
-    '#description' => t('The maximal amount of files to keep (0 means unlimited).'),
-    '#size' => 4,
-  );
-}
-
-/**
- * Monolog loader callback; Loads a SyslogHandler handler.
- *
- * @return HandlerInterface
- */
-function monolog_syslog_handler_loader($options) {
-  return new SyslogHandler($options['ident'], LOG_USER, $options['level'], $options['bubble']);
-}
-
-/**
- * Monolog settings form; Settings for the SyslogHandler handler.
- */
-function monolog_syslog_handler_settings(&$form, &$form_state, $profile, array $handler) {
-  $form['ident'] = array(
-    '#title' => t('Identity string'),
-    '#type' => 'textfield',
-    '#default_value' => $handler['ident'],
-    '#description' => t('The string ident is added to each message.'),
-  );
-}
-
-/**
- * Monolog loader callback; Loads a ChromePHPHandler handler.
- *
- * @return HandlerInterface
- */
-function monolog_chromephp_handler_loader($options) {
-  return new ChromePHPHandler($options['level'], $options['bubble']);
-}
-
-/**
- * Monolog loader callback; Loads a FirePHPHandler handler.
- *
- * @return HandlerInterface
- */
-function monolog_firephp_handler_loader($options) {
-  return new FirePHPHandler($options['level'], $options['bubble']);
 }
 
 /**

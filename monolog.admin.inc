@@ -631,6 +631,7 @@ function monolog_handler_form($form, &$form_state, stdClass $profile, array $han
     '#description' => t('If unckecked, messages processed by this handler will be blocked from being processed by the subsequent handlers in the stack.'),
   );
 
+  monolog_load_handler_include($handler_info);
   if (isset($handler_info['settings form'])) {
     if (isset($handler_info['default settings'])) {
       $handler += $handler_info['default settings'];

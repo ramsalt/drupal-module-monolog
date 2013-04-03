@@ -30,6 +30,22 @@ function hook_monolog_channel_info() {
 }
 
 /**
+ * The path to the directory containing the handler includes.
+ *
+ * Each include file inside of the directory contains a handler's "loader
+ * callback" and "settings callback" functions. The file will be autoloaded if
+ * the filename is the machine name of the handler with a ".inc" suffix, for
+ * example "stream_handler.inc".
+ *
+ * The directory is relative to the module's root.
+ *
+ * @return string
+ */
+function hook_monolog_handler_path() {
+  return 'handlers';
+}
+
+/**
  * Contains default profile configurations.
  *
  * A profile is a collection of handlers that process the record.

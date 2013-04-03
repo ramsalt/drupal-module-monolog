@@ -5,4 +5,24 @@
  * Logs records to a Graylog2 server.
  */
 
-// Nothing to do ...
+/**
+ * Implements hook_monolog_handler_info().
+ */
+function monolog_gelf_monolog_handler_info() {
+  $handlers = array();
+
+  $handlers['gelf'] = array(
+    'label' => t('GELF Handler'),
+    'description' => t('Logs records to a Graylog2 server.'),
+    'loader callback' => 'monolog_gelf_handler_loader',
+    'settings form' => 'monolog_gelf_handler_settings',
+    'handler file' => drupal_get_path('module', 'monolog') . '/handlers/gelf.inc',
+    'default settings' => array(
+      'hostname' => '',
+      'port' => 12201,
+      'chunk_size' => 1420,
+    ),
+  );
+
+  return $handlers;
+}

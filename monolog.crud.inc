@@ -174,7 +174,29 @@ function monolog_handler_info_load_all() {
   $handlers = &drupal_static(__FUNCTION__);
   if (!$handlers) {
     composer_manager_register_autoloader();
-    $handlers = module_invoke_all('monolog_handler_info');
+    foreach (module_implements('monolog_handler_info') as $module) {
+
+      $module_path = drupal_get_path('module', $module);
+      $handler_path = module_invoke($module, 'monolog_handler_path');
+
+      $hook = $module . '_monolog_handler_info';
+      $info = (array) $hook();
+      foreach ($info as $handler_name => $handler_info) {
+
+        // Add the defaults to the handler info.
+        $handlers[$handler_name] = $handler_info + array(
+          'name' => $handler_name,
+          'module' => $module,
+          'handler file' => '',
+        );
+
+        // Set the path to the handler file if the module defines a handler
+        // directory and the include has not yet been defined.
+        if ($handler_path && !$handlers[$handler_name]['handler file']) {
+          $handlers[$handler_name]['handler file'] = $module_path . '/' . $handler_path . '/' . $handler_name . '.inc';
+        }
+      }
+    }
     drupal_alter('monolog_handler_info', $handlers);
   }
   return $handlers;
