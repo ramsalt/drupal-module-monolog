@@ -43,6 +43,16 @@ function monolog_monolog_handler_info() {
     ),
   );
 
+  $handlers['native_mailer'] = array(
+    'label' => t('Native Mail Handler'),
+    'description' => t('Sends emails using PHP\'s <code>mail()</code> function.'),
+    'default settings' => array(
+      'to' => '<site-mail>',
+      'from' => '<site-mail>',
+      'subject' => t('Log message sent by !site', array('!site' => variable_get('site_name', 'Drupal'))),
+    ),
+  );
+
   $handlers['chromephp'] = array(
     'label' => t('ChromePHP Handler'),
     'description' => t('Handler for ChromePHP, providing inline console messages within Chrome.'),
