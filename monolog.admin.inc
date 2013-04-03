@@ -632,7 +632,7 @@ function monolog_handler_form($form, &$form_state, stdClass $profile, array $han
   );
 
   monolog_load_handler_include($handler_info);
-  if (isset($handler_info['settings callback'])) {
+  if ($handler_info['settings callback']) {
     if (isset($handler_info['default settings'])) {
       $handler += $handler_info['default settings'];
     }

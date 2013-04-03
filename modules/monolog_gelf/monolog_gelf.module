@@ -7,6 +7,9 @@
 
 /**
  * Implements hook_monolog_handler_info().
+ *
+ * The handler include is places in the core module's handler directory so that
+ * we don't have multiple handler directories.
  */
 function monolog_gelf_monolog_handler_info() {
   $handlers = array();
@@ -14,8 +17,6 @@ function monolog_gelf_monolog_handler_info() {
   $handlers['gelf'] = array(
     'label' => t('GELF Handler'),
     'description' => t('Logs records to a Graylog2 server.'),
-    'loader callback' => 'monolog_gelf_handler_loader',
-    'settings callback' => 'monolog_gelf_handler_settings',
     'handler file' => drupal_get_path('module', 'monolog') . '/handlers/gelf.inc',
     'default settings' => array(
       'hostname' => '',

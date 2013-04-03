@@ -188,6 +188,8 @@ function monolog_handler_info_load_all() {
           'name' => $handler_name,
           'module' => $module,
           'handler file' => '',
+          'loader callback' => 'monolog_' . $handler_name . '_handler_loader',
+          'settings callback' => 'monolog_' . $handler_name . '_handler_settings',
         );
 
         // Set the path to the handler file if the module defines a handler
