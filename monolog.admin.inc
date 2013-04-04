@@ -202,6 +202,10 @@ function monolog_profile_page() {
       'href' => $base_path,
     );
     $operations[] = array(
+      'title' => t('Export'),
+      'href' => $base_path . '/export',
+    );
+    $operations[] = array(
       'title' => t('Delete'),
       'href' => $base_path . '/delete',
     );
@@ -500,27 +504,113 @@ function monolog_profile_delete_form_submit($form, &$form_state) {
 }
 
 /**
+ * Export form for profile configurations.
  *
+ * @ingroup forms
  */
-function monolog_profile_export_form($form, &$form_state) {
+function monolog_profile_export_form($form, &$form_state, stdClass $profile) {
+  // Pop "Add Hander" link off, add profile link.
+  $breadcrumb = drupal_get_breadcrumb();
+  array_pop($breadcrumb);
+  $breadcrumb[] = l($profile->options['label'], 'admin/config/development/monolog/profile/' . $profile->name);
+  drupal_set_breadcrumb($breadcrumb);
 
-}
-
-/**
- *
- */
-function monolog_profile_import_form($form, &$form_state) {
-  $form['message'] = array(
-    '#markup' => t('To be implemented. See <a href="@url">@url</a>.', array('@url' => url('http://drupal.org/node/1943146'))),
+  $form['back'] = array(
+    '#type' => 'link',
+    '#title' => t('Go back to logging profiles page'),
+    '#href' => 'admin/config/development/monolog/profile',
   );
+
+  // Add the export form.
+  $title = t('Logging profile configuration');
+  $export = ctools_export_crud_export('monolog_profile', $profile);
+  $form = ctools_export_form($form, $form_state, $export, $title);
   return $form;
 }
 
 /**
+ * Import form for profile configurations.
  *
+ * @see monolog_profile_import_form_validate()
+ * @see monolog_profile_import_form_submit()
+ *
+ * @ingroup forms
  */
-function monolog_profile_export_page($profile) {
+function monolog_profile_import_form($form, &$form_state) {
+  ctools_include('export');
 
+  $form['profile'] = array(
+    '#type' => 'value',
+    '#value' => '',
+  );
+
+  $form['import'] = array(
+    '#title' => t('Logging profile configuration code'),
+    '#type' => 'textarea',
+    '#rows' => 10,
+    '#required' => TRUE,
+  );
+
+  $form['overwrite'] = array(
+    '#title' => t('Allow import to overwrite an existing logging profile configuration.'),
+    '#type' => 'checkbox',
+  );
+
+  $form['actions'] = array(
+    '#type' => 'actions',
+  );
+
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Import configuration'),
+  );
+
+  $form['actions']['cancel'] = array(
+    '#type' => 'link',
+    '#title' => t('Go back to logging profiles page'),
+    '#href' => 'admin/config/development/monolog/profile',
+  );
+
+  $form['#validate'] = array('monolog_profile_import_form_validate');
+  $form['#submit'] = array('monolog_profile_import_form_submit');
+
+  return $form;
+}
+
+/**
+ * Form validation handler for monolog_profile_import_form().
+ */
+function monolog_profile_import_form_validate($form, &$form_state) {
+  $profile = ctools_export_crud_import('monolog_profile', $form_state['values']['import']);
+  if (!is_string($profile)) {
+    if (!$form_state['values']['overwrite'] && ctools_export_crud_load('monolog_profile', $profile->name)) {
+      form_error($form['import'], t('Logging profile @name already exists', array('@name' => $profile->name)));
+    }
+    else {
+      form_set_value($form['profile'], $profile, $form_state);
+    }
+  }
+  else {
+    form_error($form['import'], t('Unable to get an import from the code. Errors reported: @errors', array('@errors' => $profile)));
+  }
+}
+
+/**
+ * Form submission handler for monolog_profile_import_form().
+ */
+function monolog_profile_import_form_submit($form, &$form_state) {
+  try {
+    monolog_profile_delete($form_state['values']['profile']);
+    if (!monolog_profile_save($form_state['values']['profile'])) {
+      throw new \RuntimeException(t('Error importing profile.'));
+    }
+    $form_state['redirect'] = 'admin/config/development/monolog/profile';
+    drupal_set_message(t('The configuration options have been imported.'));
+  }
+  catch (Exception $e) {
+    form_set_error('import', $e->getMessage());
+    watchdog_exception('monolog', $e);
+  }
 }
 
 /**

@@ -70,7 +70,7 @@ function monolog_menu() {
 
   $items[$base_path . '/profile/import'] = array(
     'title' => 'Import profile',
-    'description' => 'Import a logging profile',
+    'description' => 'Import a logging profile configuration',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('monolog_profile_import_form'),
     'type' => MENU_LOCAL_ACTION,
@@ -89,6 +89,14 @@ function monolog_menu() {
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => -10,
   );
+
+  $items[$base_path . '/profile/%monolog_profile/export'] = array(
+    'title' => 'Export',
+    'description' => 'Export a logging profile configuration',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('monolog_profile_export_form', 5),
+    'type' => MENU_LOCAL_TASK,
+  ) + $base_item;
 
   $items[$base_path . '/profile/%monolog_profile/delete'] = array(
     'title' => 'Delete',
