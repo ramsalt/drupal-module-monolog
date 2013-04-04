@@ -192,29 +192,7 @@ function monolog($channel_name) {
       }
 
       $logger = new Logger($channel_name);
-
-      // Reverse the handlers since they are pushed onto the stack. This allows
-      // handlers at the top of the table to be processed first.
-      $handlers = array_reverse($profile->options['handlers']);
-      foreach ($handlers as $handler_name => $handler_config) {
-
-        $handler_info = monolog_handler_info_load($handler_config['handler']);
-        if (!$handler_info) {
-          $message = t('Monolog handler not valid: @handler', array('@handler' => $handler_config['handler']));
-          throw new \InvalidArgumentException($message);
-        }
-
-        monolog_load_handler_include($handler_info);
-        if (!function_exists($handler_info['loader callback'])) {
-          $message = t('Function not defined: @function', array('@function' => $handler_info['loader callback']));
-          throw new \InvalidArgumentException($message);
-        }
-
-        $handler_config['bubble'] = (bool) $handler_config['bubble'];
-        $handler = $handler_info['loader callback']($handler_config);
-        $logger->pushHandler($handler);
-      }
-
+      monolog_push_handlers($logger, $profile);
       $loggers[$channel_name] = $logger;
     }
     catch (\InvalidArgumentException $e) {
@@ -225,6 +203,40 @@ function monolog($channel_name) {
     }
   }
   return $loggers[$channel_name];
+}
+
+/**
+ * Pushes handlers onto the stack.
+ *
+ * @param Logger $logger
+ *   The logger that handlers are being pushed onto.
+ * @param stdClass $profile
+ *   The logging profile configuration.
+ *
+ * @throws \InvalidArgumentException
+ */
+function monolog_push_handlers(Logger $logger, stdClass $profile) {
+  // Reverse the handlers since they are pushed onto the stack. This allows
+  // handlers at the top of the table to be processed first.
+  $handlers = array_reverse($profile->options['handlers']);
+  foreach ($handlers as $handler_name => $handler_config) {
+
+    $handler_info = monolog_handler_info_load($handler_config['handler']);
+    if (!$handler_info) {
+      $message = t('Monolog handler not valid: @handler', array('@handler' => $handler_config['handler']));
+      throw new \InvalidArgumentException($message);
+    }
+
+    monolog_load_handler_include($handler_info);
+    if (!function_exists($handler_info['loader callback'])) {
+      $message = t('Function not defined: @function', array('@function' => $handler_info['loader callback']));
+      throw new \InvalidArgumentException($message);
+    }
+
+    $handler_config['bubble'] = (bool) $handler_config['bubble'];
+    $handler = $handler_info['loader callback']($handler_config);
+    $logger->pushHandler($handler);
+  }
 }
 
 /**
