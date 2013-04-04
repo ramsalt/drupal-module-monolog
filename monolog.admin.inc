@@ -508,7 +508,12 @@ function monolog_profile_delete_form_submit($form, &$form_state) {
     $profile = $form['#monolog']['profile'];
     $args = array('%label' => $profile->options['label']);
     if (monolog_profile_delete($profile)) {
-      drupal_set_message(t('The %label profile has been removed.', $args));
+      if ($profile->export_type & EXPORT_IN_CODE) {
+        drupal_set_message(t('The %label profile has been reverted.', $args));
+      }
+      else {
+        drupal_set_message(t('The %label profile has been removed.', $args));
+      }
     } else {
       drupal_set_message(t('Error removing the %label profile.', $args), 'error');
     }
