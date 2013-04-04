@@ -196,6 +196,9 @@ function monolog_profile_page() {
       $row['handlers'] = '<em>No handlers</em>';
     }
 
+    $in_db = $profile->export_type & EXPORT_IN_DATABASE;
+    $in_code = $profile->export_type & EXPORT_IN_CODE;
+
     $operations = array();
     $operations[] = array(
       'title' => t('Edit'),
@@ -205,10 +208,12 @@ function monolog_profile_page() {
       'title' => t('Export'),
       'href' => $base_path . '/export',
     );
-    $operations[] = array(
-      'title' => t('Delete'),
-      'href' => $base_path . '/delete',
-    );
+    if ($profile->export_type & EXPORT_IN_DATABASE) {
+      $operations[] = array(
+        'title' => $profile->export_type & EXPORT_IN_CODE ? t('Revert') : t('Delete'),
+        'href' => $base_path . '/delete',
+      );
+    }
 
     $row['operations'] = array(
       'data' => array(
@@ -479,12 +484,20 @@ function monolog_profile_delete_form($form, &$form_state, $profile) {
     'profile' => $profile,
   );
 
+  $revert = $profile->export_type & EXPORT_IN_CODE;
+
   $args = array('%label' => $profile->options['label']);
-  $prompt = t('Are you sure you want to remove the %label profile?', $args);
+  if ($revert) {
+    $prompt = t('Are you sure you want to revert the %label profile?', $args);
+  }
+  else {
+    $prompt = t('Are you sure you want to remove the %label profile?', $args);
+  }
   $cancel_path = 'admin/config/development/monolog/profile';
   $warning = t('This action cannot be undone.');
+  $yes = $revert ? t('Revert') : t('Delete');
 
-  return confirm_form($form, $prompt, $cancel_path, $warning, t('Delete'), t('Cancel'));
+  return confirm_form($form, $prompt, $cancel_path, $warning, $yes, t('Cancel'));
 }
 
 /**
