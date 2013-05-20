@@ -83,6 +83,12 @@ function monolog_monolog_handler_info() {
     'settings callback' => FALSE,
   );
 
+  $handlers['null'] = array(
+    'label' => t('Null Handler'),
+    'description' => t('Any record it can handle will be thrown away. This can be used to put on top of an existing handler stack to disable it temporarily.'),
+    'group' => t('Wrappers / special handlers'),
+  );
+
   return $handlers;
 }
 
