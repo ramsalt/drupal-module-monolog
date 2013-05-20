@@ -197,7 +197,9 @@ function monolog($channel_name) {
     }
     catch (\InvalidArgumentException $e) {
       $loggers[$channel_name] = new NullLogger();
-      if (user_access('administer site configuration')) {
+      // The user module might not be loaded if watchdog() is called too early.
+      // @see http://drupal.org/node/1997462
+      if (function_exists('user_access') && user_access('administer site configuration')) {
         drupal_set_message($e->getMessage(), 'error');
       }
     }

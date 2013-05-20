@@ -61,11 +61,22 @@ function monolog_logging_monolog_channel_info() {
 function monolog_logging_watchdog(array $log_entry) {
   try {
 
+    // Perform a partial bootstrap if watchdog is called prior to the
+    // DRUPAL_BOOTSTRAP_FULL phase.
+    if (!function_exists('monolog')) {
+      monolog_logging_bootstrap();
+    }
+
     // Check whether to use the watchdog type as the channel name.
     // @see http://drupal.org/node/1990282
     if (variable_get('monolog_type_as_channel', 1)) {
       $logger = clone monolog('watchdog');
-      $logger->setName($log_entry['type']);
+      // If there was an error, the PSR-3 null logger is used which does not
+      // have a setName() method. There is no need to set a name since the
+      // message will be be sent to a black hole.
+      if ('Psr\Log\NullLogger' != get_class($logger)) {
+        $logger->setName($log_entry['type']);
+      }
     }
     else {
       $logger = monolog('watchdog');
@@ -84,6 +95,42 @@ function monolog_logging_watchdog(array $log_entry) {
   catch (Exception $e) {
     // Fail silently since we cannot log any messages or do anything that would
     // trigger another watchdog call.
+  }
+}
+
+/**
+ * Ensure that required subsystems and modules are loaded if watchdog messages
+ * are logged prior to a full Drupal bootstrap.
+ *
+ * @see _drupal_bootstrap_full()
+ * @see http://drupal.org/node/1997462
+ */
+function monolog_logging_bootstrap() {
+  static $bootstrapped = FALSE;
+  if (!$bootstrapped) {
+    $bootstrapped = TRUE;
+
+    // CTools requires the drupal_get_path() and list_themes() functions.
+    require_once DRUPAL_ROOT . '/includes/common.inc';
+    require_once DRUPAL_ROOT . '/includes/theme.inc';
+    require_once DRUPAL_ROOT . '/includes/unicode.inc';
+
+    // Monolog requires the file_prepare_directory() function.
+    require_once DRUPAL_ROOT . '/includes/file.inc';
+
+    // Load the required modules.
+    drupal_load('module', 'system');
+    drupal_load('module', 'ctools');
+    drupal_load('module', 'composer_manager');
+    drupal_load('module', 'monolog');
+
+    // Detect string handling method.
+    unicode_check();
+
+    // Undo magic quotes.
+    fix_gpc_magic();
+
+    // file_get_stream_wrappers() is called during the normal application flow.
   }
 }
 
