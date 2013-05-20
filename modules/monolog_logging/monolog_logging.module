@@ -60,7 +60,16 @@ function monolog_logging_monolog_channel_info() {
  */
 function monolog_logging_watchdog(array $log_entry) {
   try {
-    $logger = monolog('watchdog');
+
+    // Check whether to use the watchdog type as the channel name.
+    // @see http://drupal.org/node/1990282
+    if (variable_get('monolog_type_as_channel', 1)) {
+      $logger = clone monolog('watchdog');
+      $logger->setName($log_entry['type']);
+    }
+    else {
+      $logger = monolog('watchdog');
+    }
 
     $enabled_contexts = monolog_logging_get_contexts();
     $context = array_intersect_key($log_entry, $enabled_contexts);
@@ -110,13 +119,11 @@ function monolog_logging_get_contexts() {
   static $contexts = array();
   if (!$contexts) {
     $contexts = array_filter(variable_get('monolog_logging_contexts', array(
-      'type' => 'type',
       'uid' => 'uid',
       'request_uri' => 'request_uri',
       'referer' => 'referer',
       'ip' => 'ip',
       'link' => 'link',
-      'request_id' => 'request_id',
     )));
   }
   return $contexts;

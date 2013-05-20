@@ -5,7 +5,7 @@
  * A Framework and UI for integrating with the Monolog library.
  */
 
-use Monolog\Logger;
+use Drupal\Monolog\Logger;
 use Psr\Log\NullLogger;
 
 require_once __DIR__ . '/monolog.crud.inc';

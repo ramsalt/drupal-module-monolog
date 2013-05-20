@@ -28,7 +28,6 @@ function monolog_logging_watchdog_settings_form($form, &$form_state) {
       'request_id' => t('A unique identifier for the page request or PHP process to logically group log messages.'),
     ),
     '#default_value' => variable_get('monolog_logging_contexts', array(
-      'type' => 'type',
       'uid' => 'uid',
       'request_uri' => 'request_uri',
       'referer' => 'referer',
@@ -37,10 +36,17 @@ function monolog_logging_watchdog_settings_form($form, &$form_state) {
     )),
   );
 
-//  $link = l(t('Add a watchdog type mapping'), 'admin/config/development/monolog/watchdog/type-mapping/add');
-//  $form['action_link'] = array(
-//    '#markup' => '<ul class="action-links"><li>' . $link . '</li></ul>',
-//  );
+  $form['monolog_drupal_compatibility'] = array(
+    '#type' => 'item',
+    '#title' => t('Drupal compatibility'),
+  );
+
+  $form['monolog_type_as_channel'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use the watchdog type as the channel name'),
+    '#description' => t('Enable this option to use the watchdog type as each record\'s channel name instead of "watchdog". This allows handlers such as the GELF handler to behave as the current Drupal watchdog implementations do.'),
+    '#default_value' => variable_get('monolog_type_as_channel', 1),
+  );
 
   return system_settings_form($form);
 }
