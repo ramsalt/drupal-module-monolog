@@ -23,6 +23,7 @@ function monolog_profile_load_all() {
   if (NULL === $profiles) {
     ctools_include('export');
     $profiles = ctools_export_crud_load_all('monolog_profile');
+    ksort($profiles);
     foreach ($profiles as $name => $profile) {
       uasort($profile->options['handlers'], 'drupal_sort_weight');
     }
