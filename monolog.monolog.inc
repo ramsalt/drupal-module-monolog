@@ -57,6 +57,18 @@ function monolog_monolog_handler_info() {
     ),
   );
 
+  $handlers['socket'] = array(
+    'label' => t('Sockets Handler'),
+    'description' => t('Logs records to sockets, use this for UNIX and TCP sockets.'),
+    'group' => t('Servers and networked logging'),
+    'default settings' => array(
+      'connection_string' => '',
+      'persistent' => 0,
+      'connection_timeout' => 5,
+      'write_timeout' => 60,
+    ),
+  );
+
   $handlers['chromephp'] = array(
     'label' => t('ChromePHP Handler'),
     'description' => t('Handler for ChromePHP, providing inline console messages within Chrome.'),
