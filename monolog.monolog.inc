@@ -89,6 +89,18 @@ function monolog_monolog_handler_info() {
     'group' => t('Wrappers / special handlers'),
   );
 
+  $handlers['hipchat'] = array(
+    'label' => t('HipChat Handler'),
+    'description' => t('Logs records to a HipChat chat room using its API.'),
+    'group' => t('Alerts and emails'),
+    'default settings' => array(
+      'token' => '',
+      'room' => '',
+      'contact_name' => variable_get('site_name', 'Drupal'),
+      'notify' => 0,
+    ),
+  );
+
   return $handlers;
 }
 
