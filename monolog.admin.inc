@@ -151,7 +151,7 @@ function theme_monolog_channel_table(array $variables) {
   }
 
   $output .= drupal_render_children($variables['element']);
-  $output .= theme('table', array(
+  $output .= _theme('table', array(
     'caption' => t('Logging Channels'),
     'header' => $header,
     'rows' => $rows,

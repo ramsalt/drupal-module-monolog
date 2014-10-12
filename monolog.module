@@ -8,8 +8,6 @@
 use Drupal\Monolog\Logger;
 use Psr\Log\NullLogger;
 
-require_once __DIR__ . '/monolog.crud.inc';
-
 /**
  * Implements hook_hook_info().
  */
@@ -144,10 +142,12 @@ function monolog_theme() {
     'monolog_channel_table' => array(
       'render element' => 'element',
       'file' => 'monolog.admin.inc',
+      'function' => 'theme_monolog_channel_table',
     ),
     'monolog_handler_table' => array(
       'render element' => 'element',
       'file' => 'monolog.admin.inc',
+      'function' => 'theme_monolog_handler_table',
     ),
   );
 }
