@@ -4,7 +4,7 @@
  * Monolog extension for use with Drupal.
  */
 
-namespace Drupal\Monolog;
+namespace Drupal\monolog;
 
 use Monolog\Logger as BaseLogger;
 

@@ -5,25 +5,7 @@
  * Administrative settings for the Monolog module.
  */
 
-use Monolog\Logger;
-
-/**
- * Returns the logging level options.
- *
- * @return array
- */
-function monolog_level_options() {
-  return array(
-    Logger::DEBUG => t('Debug'),
-    Logger::INFO => t('Info'),
-    Logger::NOTICE => t('Notice'),
-    Logger::WARNING => t('Warning'),
-    Logger::ERROR => t('Error'),
-    Logger::CRITICAL => t('Critical'),
-    Logger::ALERT => t('Alert'),
-    Logger::EMERGENCY => t('Emergency'),
-  );
-}
+use Drupal\Component\Utility\String;
 
 /**
  * Returns an array of profile options.
@@ -411,22 +393,17 @@ function theme_monolog_handler_table(array $variables) {
     t('Operations'),
   );
 
-  $handler_info = $variables['element']['#monolog']['handler_info'];
   $level_options = monolog_level_options();
 
   $profile = $variables['element']['#monolog']['profile'];
 
   $rows = array();
-  foreach ($profile->options['handlers'] as $name => $handler) {
-    $base_path = 'admin/config/development/monolog/profile/' . $profile->name . '/handler/' . $name;
-
-    if (!isset($handler_info[$handler['handler']])) {
-      $handler_info[$handler['handler']] = array('label' => $handler['handler']);
-    }
+  foreach ($profile->getHandlers() as $name => $handler) {
+    $base_path = 'base://admin/config/development/monolog/profile/' . $profile->id() . '/handler/' . $handler->getPluginId();
 
     $row = array(
-      'label' => check_plain($handler['label']),
-      'handler' => check_plain($handler_info[$handler['handler']]['label']),
+      'label' => String::checkPlain($handler->label()),
+      'handler' => String::checkPlain($handler->getPluginId()),
       'level' => drupal_render($variables['element']['level'][$name]),
       'bubble' => drupal_render($variables['element']['bubble'][$name]),
       'weight' => drupal_render($variables['element']['weight'][$name]),
@@ -435,11 +412,11 @@ function theme_monolog_handler_table(array $variables) {
     $operations = array();
     $operations[] = array(
       'title' => t('Edit'),
-      'href' => $base_path . '/edit',
+      'url' => Drupal\Core\Url::fromUri($base_path . '/edit'),
     );
     $operations[] = array(
       'title' => t('Delete'),
-      'href' => $base_path . '/delete',
+      'url' => Drupal\Core\Url::fromUri($base_path . '/delete'),
     );
 
     $row['operations'] = array(
@@ -456,9 +433,9 @@ function theme_monolog_handler_table(array $variables) {
     );
   }
 
-  drupal_add_tabledrag('monolog-handler-table', 'order', 'sibling', 'monolog-handler-weight');
+  //drupal_add_tabledrag('monolog-handler-table', 'order', 'sibling', 'monolog-handler-weight');
   $output .= drupal_render_children($variables['element']);
-  $output .= theme('table', array(
+  $output .= _theme('table', array(
     'caption' => t('Logging Handlers'),
     'header' => $header,
     'rows' => $rows,
