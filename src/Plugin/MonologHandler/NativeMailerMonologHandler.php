@@ -9,7 +9,7 @@ namespace Drupal\monolog\Plugin\MonologHandler;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\monolog\ConfigurableMonologHandlerInterface;
-use Drupal\monolog\MonologHandlerBase;
+use Drupal\monolog\ConfigurableMonologHandlerBase;
 use Monolog\Handler\NativeMailerHandler;
 
 /**
@@ -22,12 +22,12 @@ use Monolog\Handler\NativeMailerHandler;
  *   group = @Translation("Alerts and emails"),
  * )
  */
-class NativeMailerMonologHandler extends MonologHandlerBase implements ConfigurableMonologHandlerInterface {
+class NativeMailerMonologHandler extends ConfigurableMonologHandlerBase implements ConfigurableMonologHandlerInterface {
 
   /**
    * {@inheritdoc}
    */
-  public function getHandlerClass() {
+  public function getHandlerInstance() {
     // @todo Switch to tokens.
     if ('<site-mail>' == $this->configuration['to']) {
       $options['to'] = \Drupal::config('system.site')->get('site_mail');
@@ -42,6 +42,7 @@ class NativeMailerMonologHandler extends MonologHandlerBase implements Configura
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    $form = parent::buildConfigurationForm($form, $form_state);
     $form['to'] = array(
       '#title' => $this->t('Receiver'),
       '#type' => 'email',
@@ -72,13 +73,8 @@ class NativeMailerMonologHandler extends MonologHandlerBase implements Configura
   /**
    * {@inheritdoc}
    */
-  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+    parent::submitConfigurationForm($form, $form_state);
     $this->configuration['to'] = $form_state->getValue('to');
     $this->configuration['subject'] = $form_state->getValue('subject');
     $this->configuration['from'] = $form_state->getValue('from');

@@ -124,7 +124,7 @@ class MonologProfile extends ConfigEntityBase implements MonologProfileInterface
     $this->save();
     return $this;
   }
-  
+
   /**
    * {@inheritdoc}
    */

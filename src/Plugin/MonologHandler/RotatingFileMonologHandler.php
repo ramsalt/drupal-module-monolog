@@ -9,7 +9,7 @@ namespace Drupal\monolog\Plugin\MonologHandler;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\monolog\ConfigurableMonologHandlerInterface;
-use Drupal\monolog\MonologHandlerBase;
+use Drupal\monolog\ConfigurableMonologHandlerBase;
 use Monolog\Handler\RotatingFileHandler;
 
 /**
@@ -22,12 +22,12 @@ use Monolog\Handler\RotatingFileHandler;
  *   group = @Translation("Files and syslog"),
  * )
  */
-class RotatingFileMonologHandler extends MonologHandlerBase implements ConfigurableMonologHandlerInterface {
+class RotatingFileMonologHandler extends ConfigurableMonologHandlerBase implements ConfigurableMonologHandlerInterface {
 
   /**
    * {@inheritdoc}
    */
-  public function getHandlerClass() {
+  public function getHandlerInstance() {
     $directory = dirname($this->configuration['filepath']);
     monolog_prepare_log_dir($directory);
     return new RotatingFileHandler($this->configuration['filepath'], $this->configuration['max_files'], $this->configuration['level'], $this->configuration['bubble']);
@@ -37,6 +37,7 @@ class RotatingFileMonologHandler extends MonologHandlerBase implements Configura
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    $form = parent::buildConfigurationForm($form, $form_state);
     $form['filepath'] = [
       '#title' => $this->t('Log file path'),
       '#type' => 'textfield',
@@ -65,6 +66,7 @@ class RotatingFileMonologHandler extends MonologHandlerBase implements Configura
    * {@inheritdoc}
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+    parent::submitConfigurationForm($form, $form_state);
     $this->configuration['filepath'] = $form_state->getValue('filepath');
     $this->configuration['max_files'] = $form_state->getValue('max_files');
   }

@@ -26,7 +26,7 @@ class ChromePhpMonologHandler extends MonologHandlerBase implements MonologHandl
   /**
    * {@inheritdoc}
    */
-  public function getHandlerClass() {
+  public function getHandlerInstance() {
     return new ChromePHPHandler($this->configuration['level'], $this->configuration['bubble']);
   }
 

@@ -26,7 +26,7 @@ class FirePhpMonologHandler extends MonologHandlerBase implements MonologHandler
   /**
    * {@inheritdoc}
    */
-  public function getHandlerClass() {
+  public function getHandlerInstance() {
     return new FirePHPHandler($this->configuration['level'], $this->configuration['bubble']);
   }
 

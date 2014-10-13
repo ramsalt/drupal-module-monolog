@@ -44,22 +44,47 @@ interface MonologHandlerInterface extends ConfigurablePluginInterface {
   public function getWeight();
 
   /**
-   * Sets the weight for this image effect.
+   * Sets the weight for this handler.
    *
    * @param int $weight
-   *   The weight for this image effect.
+   *   The weight for this handler.
    *
    * @return $this
    */
   public function setWeight($weight);
-  
+
   /**
-   * Loads the handler class.
+   * Returns the log level of this handler.
+   *
+   * @return int
+   *   The log level of the handler.
+   */
+  public function getLevel();
+
+  /**
+   * Sets the log level for this handler.
+   *
+   * @param int $level
+   *   The weight for handler.
+   *
+   * @return $this
+   */
+  public function setLevel($level);
+
+  /**
+   * Whether this handler allows bubbling up, or stops propagation.
+   *
+   * @return bool
+   */
+  public function allowsBubblingUp();
+
+  /**
+   * Loads the handler class and returns an instance of it.
    *
    * @todo Move this to container.
-   * 
+   *
    * @return \Monolog\Handler\HandlerInterface
    */
-  public function getHandlerClass();
+  public function getHandlerInstance();
 
 }

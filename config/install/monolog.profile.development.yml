@@ -7,10 +7,9 @@ handlers:
   34722c97-ccc3-4a8d-9600-d9ee9438be7c:
     uuid: 34722c97-ccc3-4a8d-9600-d9ee9438be7c
     id: stream
-    weight: 1
     data:
-      filepath: 'public://monolog/drupal.log'
-      handler: 'stream'
+      label: 'Log file'
+      weight: -50
       level: 200
       bubble: 1
-      weight: -50
+      filepath: 'public://monolog/drupal.log'

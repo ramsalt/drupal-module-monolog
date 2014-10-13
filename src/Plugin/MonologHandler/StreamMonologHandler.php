@@ -9,7 +9,7 @@ namespace Drupal\monolog\Plugin\MonologHandler;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\monolog\ConfigurableMonologHandlerInterface;
-use Drupal\monolog\MonologHandlerBase;
+use Drupal\monolog\ConfigurableMonologHandlerBase;
 use Monolog\Handler\StreamHandler;
 
 /**
@@ -22,12 +22,12 @@ use Monolog\Handler\StreamHandler;
  *   group = @Translation("Files and syslog"),
  * )
  */
-class StreamMonologHandler extends MonologHandlerBase implements ConfigurableMonologHandlerInterface {
+class StreamMonologHandler extends ConfigurableMonologHandlerBase implements ConfigurableMonologHandlerInterface {
 
   /**
    * {@inheritdoc}
    */
-  public function getHandlerClass() {
+  public function getHandlerInstance() {
     $directory = dirname($this->configuration['filepath']);
     monolog_prepare_log_dir($directory);
     return new StreamHandler($this->configuration['filepath'], $this->configuration['level'], $this->configuration['bubble']);
@@ -37,6 +37,7 @@ class StreamMonologHandler extends MonologHandlerBase implements ConfigurableMon
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    $form = parent::buildConfigurationForm($form, $form_state);
     $form['filepath'] = array(
       '#title' => $this->t('Log file path'),
       '#type' => 'textfield',
@@ -57,6 +58,7 @@ class StreamMonologHandler extends MonologHandlerBase implements ConfigurableMon
    * {@inheritdoc}
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+    parent::submitConfigurationForm($form, $form_state);
     $this->configuration['filepath'] = $form_state->getValue('filepath');
   }
 

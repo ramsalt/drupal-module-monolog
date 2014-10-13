@@ -84,7 +84,7 @@ class MonologProfileEditForm extends MonologProfileFormBase {
       // Render handlers below parent elements.
       '#weight' => 5,
     ];
-    
+
     foreach ($this->entity->getHandlers() as $handler) {
       $key = $handler->getUuid();
       $form['handlers'][$key]['#attributes']['class'][] = 'draggable';
@@ -99,7 +99,7 @@ class MonologProfileEditForm extends MonologProfileFormBase {
         '#type' => 'select',
         '#title' => $this->t('Logging level for @handler', ['@handler' => $handler->label()]),
         '#title_display' => 'invisible',
-        '#default_value' => $handler->getConfiguration('level'),
+        '#default_value' => $handler->getLevel(),
         '#options' => monolog_level_options(),
       ];
 
@@ -107,7 +107,7 @@ class MonologProfileEditForm extends MonologProfileFormBase {
         '#type' => 'select',
         '#title' => $this->t('Bubble setting for @handler', ['@handler' => $handler->label()]),
         '#title_display' => 'invisible',
-        '#default_value' => $handler->getConfiguration('bubble'),
+        '#default_value' => $handler->allowsBubblingUp(),
         '#options' => [
           1 => t('Yes'),
           0 => t('No'),
@@ -118,9 +118,9 @@ class MonologProfileEditForm extends MonologProfileFormBase {
         '#type' => 'weight',
         '#title' => $this->t('Weight for @handler', ['@handler' => $handler->label()]),
         '#title_display' => 'invisible',
-        '#default_value' => $handler->getConfiguration('weight') ?: 0,
+        '#default_value' => $handler->getWeight(),
         '#attributes' => ['class' => ['monolog-handler-order-weight']],
-      ];      
+      ];
 
       $links = [];
       $is_configurable = $handler instanceof ConfigurableMonologHandlerInterface;
@@ -181,7 +181,7 @@ class MonologProfileEditForm extends MonologProfileFormBase {
       '#prefix' => '<div class="monolog-handler-new">',
       '#suffix' => '</div>',
     ];
-    
+
     $form['handlers']['new']['label'] = $form['handlers']['new']['level'] = $form['handlers']['new']['bubble'] = [
       'data' => [],
     ];
@@ -232,8 +232,9 @@ class MonologProfileEditForm extends MonologProfileFormBase {
     else {
       $handler = [
         'id' => $handler['id'],
-        'data' => [],
-        'weight' => $form_state->getValue('weight'),
+        'data' => [
+          'weight' => $form_state->getValue('weight'),
+        ],
       ];
       $handler_id = $this->entity->addHandler($handler);
       $this->entity->save();
@@ -281,5 +282,5 @@ class MonologProfileEditForm extends MonologProfileFormBase {
       }
     }
   }
-  
+
 }

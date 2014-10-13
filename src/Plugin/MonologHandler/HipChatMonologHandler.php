@@ -9,7 +9,7 @@ namespace Drupal\monolog\Plugin\MonologHandler;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\monolog\ConfigurableMonologHandlerInterface;
-use Drupal\monolog\MonologHandlerBase;
+use Drupal\monolog\ConfigurableMonologHandlerBase;
 use Monolog\Handler\HipChatHandler;
 
 /**
@@ -22,12 +22,12 @@ use Monolog\Handler\HipChatHandler;
  *   group = @Translation("Alerts and emails"),
  * )
  */
-class HipChatMonologHandler extends MonologHandlerBase implements ConfigurableMonologHandlerInterface {
+class HipChatMonologHandler extends ConfigurableMonologHandlerBase implements ConfigurableMonologHandlerInterface {
 
   /**
    * {@inheritdoc}
    */
-  public function getHandlerClass() {
+  public function getHandlerInstance() {
     return new HipChatHandler($this->configuration['token'], $this->configuration['room'], $this->configuration['contact_name'], $this->configuration['notify'], $this->configuration['level'], $this->configuration['bubble']);
   }
 
@@ -35,6 +35,7 @@ class HipChatMonologHandler extends MonologHandlerBase implements ConfigurableMo
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    $form = parent::buildConfigurationForm($form, $form_state);
     $form['token'] = array(
       '#title' => $this->t('HipChat API Token'),
       '#type' => 'textfield',
@@ -71,13 +72,8 @@ class HipChatMonologHandler extends MonologHandlerBase implements ConfigurableMo
   /**
    * {@inheritdoc}
    */
-  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+    parent::submitConfigurationForm($form, $form_state);
     $this->configuration['token'] = $form_state->getValue('token');
     $this->configuration['room'] = $form_state->getValue('room');
     $this->configuration['contact_name'] = $form_state->getValue('contact_name');

@@ -30,13 +30,6 @@ abstract class MonologHandlerBase extends PluginBase implements MonologHandlerIn
   protected $uuid;
 
   /**
-   * The weight of the handler.
-   *
-   * @var int
-   */
-  protected $weight = '';
-
-  /**
    * {@inheritdoc}
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition) {
@@ -60,7 +53,7 @@ abstract class MonologHandlerBase extends PluginBase implements MonologHandlerIn
    * {@inheritdoc}
    */
   public function label() {
-    return $this->pluginDefinition['label'];
+    return $this->configuration['label'];
   }
 
   /**
@@ -74,7 +67,7 @@ abstract class MonologHandlerBase extends PluginBase implements MonologHandlerIn
    * {@inheritdoc}
    */
   public function setWeight($weight) {
-    $this->weight = $weight;
+    $this->configuration['weight'] = $weight;
     return $this;
   }
 
@@ -82,19 +75,40 @@ abstract class MonologHandlerBase extends PluginBase implements MonologHandlerIn
    * {@inheritdoc}
    */
   public function getWeight() {
-    return $this->weight;
+    return $this->configuration['weight'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getLevel() {
+    return $this->configuration['level'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setLevel($level) {
+    $this->configuration['level'] = $level;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function allowsBubblingUp() {
+    return $this->configuration['bubble'];
   }
 
   /**
    * {@inheritdoc}
    */
   public function getConfiguration() {
-    return array(
+    return [
       'uuid' => $this->getUuid(),
       'id' => $this->getPluginId(),
-      'weight' => $this->getWeight(),
       'data' => $this->configuration,
-    );
+    ];
   }
 
   /**
@@ -104,11 +118,10 @@ abstract class MonologHandlerBase extends PluginBase implements MonologHandlerIn
     $configuration += [
       'data' => [],
       'uuid' => '',
-      'weight' => '',
     ];
     $this->configuration = $configuration['data'] + $this->defaultConfiguration();
     $this->uuid = $configuration['uuid'];
-    $this->weight = $configuration['weight'];
+
     return $this;
   }
 
@@ -116,7 +129,12 @@ abstract class MonologHandlerBase extends PluginBase implements MonologHandlerIn
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return [];
+    return [
+      'label' => (string) $this->pluginDefinition['label'],
+      'bubble' => 1,
+      'level' => Logger::INFO,
+      'weight' => 0,
+    ];
   }
 
   /**

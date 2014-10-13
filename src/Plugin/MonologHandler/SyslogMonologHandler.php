@@ -9,7 +9,7 @@ namespace Drupal\monolog\Plugin\MonologHandler;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\monolog\ConfigurableMonologHandlerInterface;
-use Drupal\monolog\MonologHandlerBase;
+use Drupal\monolog\ConfigurableMonologHandlerBase;
 use Monolog\Handler\SyslogHandler;
 
 /**
@@ -22,14 +22,15 @@ use Monolog\Handler\SyslogHandler;
  *   group = @Translation("Files and syslog"),
  * )
  */
-class SyslogMonologHandler extends MonologHandlerBase implements ConfigurableMonologHandlerInterface {
+class SyslogMonologHandler extends ConfigurableMonologHandlerBase implements ConfigurableMonologHandlerInterface {
 
   /**
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    $form = parent::buildConfigurationForm($form, $form_state);
     $form['ident'] = [
-      '#title' => t('Identity string'),
+      '#title' => $this->t('Identity string'),
       '#type' => 'textfield',
       '#default_value' => $this->configuration['ident'],
       '#description' => $this->t('The string ident is added to each message.'),
@@ -41,20 +42,15 @@ class SyslogMonologHandler extends MonologHandlerBase implements ConfigurableMon
   /**
    * {@inheritdoc}
    */
-  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+    parent::submitConfigurationForm($form, $form_state);
     $this->configuration['ident'] = $form_state->getValue('ident');
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getHandlerClass() {
+  public function getHandlerInstance() {
     return new SyslogHandler($this->configuration['ident'], LOG_USER, $this->configuration['level'], $this->configuration['bubble']);
   }
 

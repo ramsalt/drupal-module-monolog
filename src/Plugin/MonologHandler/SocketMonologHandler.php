@@ -27,7 +27,7 @@ class SocketMonologHandler extends MonologHandlerBase implements ConfigurableMon
   /**
    * {@inheritdoc}
    */
-  public function getHandlerClass() {
+  public function getHandlerInstance() {
     $handler = new SocketHandler($this->configuration['connection_string'], $this->configuration['level'], $this->configuration['bubble']);
     $handler->setPersistent((bool) $this->configuration['persistent']);
     if ($this->configuration['connection_timeout']) {

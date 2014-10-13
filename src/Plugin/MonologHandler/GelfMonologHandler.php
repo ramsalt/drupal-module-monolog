@@ -9,7 +9,7 @@ namespace Drupal\monolog\Plugin\MonologHandler;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\monolog\ConfigurableMonologHandlerInterface;
-use Drupal\monolog\MonologHandlerBase;
+use Drupal\monolog\ConfigurableMonologHandlerBase;
 use Monolog\Handler\GelfHandler;
 use Gelf\MessagePublisher;
 
@@ -23,12 +23,12 @@ use Gelf\MessagePublisher;
  *   group = @Translation("Servers and networked logging"),
  * )
  */
-class GelfMonologHandler extends MonologHandlerBase implements ConfigurableMonologHandlerInterface {
+class GelfMonologHandler extends ConfigurableMonologHandlerBase implements ConfigurableMonologHandlerInterface {
 
   /**
    * {@inheritdoc}
    */
-  public function getHandlerClass() {
+  public function getHandlerInstance() {
     $publisher = new MessagePublisher($this->configuration['hostname'], $this->configuration['port'], $this->configuration['chunk_size']);
     return new GelfHandler($publisher, $this->configuration['level'], $this->configuration['bubble']);
   }
@@ -37,6 +37,7 @@ class GelfMonologHandler extends MonologHandlerBase implements ConfigurableMonol
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    $form = parent::buildConfigurationForm($form, $form_state);
     $form['hostname'] = array(
       '#title' => $this->t('Hostname'),
       '#type' => 'textfield',
@@ -69,13 +70,8 @@ class GelfMonologHandler extends MonologHandlerBase implements ConfigurableMonol
   /**
    * {@inheritdoc}
    */
-  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+    parent::submitConfigurationForm($form, $form_state);
     $this->configuration['hostname'] = $form_state->getValue('hostname');
     $this->configuration['port'] = $form_state->getValue('port');
     $this->configuration['chunk_size'] = $form_state->getValue('chunk_size');

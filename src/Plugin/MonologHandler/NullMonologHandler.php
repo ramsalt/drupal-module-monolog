@@ -26,7 +26,7 @@ class NullMonologHandler extends MonologHandlerBase implements MonologHandlerInt
   /**
    * {@inheritdoc}
    */
-  public function getHandlerClass() {
+  public function getHandlerInstance() {
     return new NullHandler($this->configuration['level']);
   }
 
