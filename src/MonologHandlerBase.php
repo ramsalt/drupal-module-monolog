@@ -9,6 +9,7 @@ namespace Drupal\monolog;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Plugin\PluginBase;
+use Drupal\monolog\Logger\Logger;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

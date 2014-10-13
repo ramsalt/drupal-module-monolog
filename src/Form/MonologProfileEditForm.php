@@ -13,6 +13,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\monolog\ConfigurableMonologHandlerInterface;
+use Drupal\monolog\Logger\MonologLogLevel;
 use Drupal\monolog\MonologHandlerManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -100,7 +101,7 @@ class MonologProfileEditForm extends MonologProfileFormBase {
         '#title' => $this->t('Logging level for @handler', ['@handler' => $handler->label()]),
         '#title_display' => 'invisible',
         '#default_value' => $handler->getLevel(),
-        '#options' => monolog_level_options(),
+        '#options' => MonologLogLevel::getLevels(),
       ];
 
       $form['handlers'][$key]['bubble'] = [

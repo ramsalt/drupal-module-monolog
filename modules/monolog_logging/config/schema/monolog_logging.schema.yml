@@ -1,0 +1,14 @@
+# Schema for the configuration files of the monolog_logging module.
+
+monolog_logging.settings:
+  type: mapping
+  label: 'Monolog logging settings'
+  mapping:
+    contexts:
+      label: 'Contexts'
+      type: sequence
+      sequence:
+        - type: string
+    type_as_channel:
+      label: 'Type as channel'
+      type: integer

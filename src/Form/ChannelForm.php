@@ -7,6 +7,7 @@
 
 namespace Drupal\monolog\Form;
 
+use Drupal\Component\Utility\String;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
@@ -27,7 +28,8 @@ class ChannelForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $channel_info = [];//monolog_channel_info_load_all();
+    \Drupal::moduleHandler()->loadInclude('monolog', 'inc', 'monolog.crud');
+    $channel_info = monolog_channel_info_load_all();
     $channel_profiles = $this->config('monolog.settings')->get('monolog_channel_profiles');
 
     $form['description'] = array(
@@ -48,9 +50,13 @@ class ChannelForm extends ConfigFormBase {
       if (!isset($channel_profiles[$channel_name])) {
         $channel_profiles[$channel_name] = $info['default profile'];
       }
+      $profiles = \Drupal::entityManager()->getStorage('monolog_profile')->loadMultiple();
+      foreach ($profiles as $profile) {
+        $options[$profile->id()] = String::checkPlain($profile->label());
+      }
       $form['channel_table']['channels'][$channel_name]['profile'] = array(
         '#type' => 'select',
-        '#options' => monolog_profile_options(),
+        '#options' => $options,
         '#default_value' => $channel_profiles[$channel_name],
       );
     }

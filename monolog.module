@@ -9,23 +9,6 @@ use Drupal\Monolog\Logger;
 use Psr\Log\NullLogger;
 use Drupal\monolog\Logger as DrupalLogger;
 
-/**
- * Returns the logging level options.
- *
- * @return array
- */
-function monolog_level_options() {
-  return array(
-    DrupalLogger::DEBUG => t('Debug'),
-    DrupalLogger::INFO => t('Info'),
-    DrupalLogger::NOTICE => t('Notice'),
-    DrupalLogger::WARNING => t('Warning'),
-    DrupalLogger::ERROR => t('Error'),
-    DrupalLogger::CRITICAL => t('Critical'),
-    DrupalLogger::ALERT => t('Alert'),
-    DrupalLogger::EMERGENCY => t('Emergency'),
-  );
-}
 
 /**
  * Implements hook_hook_info().

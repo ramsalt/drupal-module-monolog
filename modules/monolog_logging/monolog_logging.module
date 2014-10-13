@@ -9,26 +9,6 @@
 use Monolog\Logger;
 
 /**
- * Implements hook_menu().
- */
-function monolog_logging_menu() {
-  $items = array();
-
-  $items['admin/config/development/monolog/watchdog'] = array(
-    'title' => 'Watchdog Settings',
-    'description' => 'Configure watchdog type mappings and context settings.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('monolog_logging_watchdog_settings_form'),
-    'access arguments' => array('administer site configuration'),
-    'type' => MENU_LOCAL_TASK,
-    'file' => 'monolog_logging.admin.inc',
-    'weight' => 10,
-  );
-
-  return $items;
-}
-
-/**
  * Implements hook_theme().
  */
 function monolog_logging_theme() {
@@ -36,6 +16,7 @@ function monolog_logging_theme() {
     'monolog_logging_map_table' => array(
       'render element' => 'element',
       'file' => 'monolog_logging.admin.inc',
+      'function' => 'theme_monolog_logging_map_table',
     ),
   );
 }

@@ -1,0 +1,7 @@
+type: module
+name: Monolog Logging
+description: Integrates Drupal's internal logging system with Monolog by routing watchdog messages to Monolog channels.
+dependencies:
+  - monolog
+core: 8.x
+package: Development
