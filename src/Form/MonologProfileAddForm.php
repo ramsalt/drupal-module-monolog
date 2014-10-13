@@ -7,8 +7,6 @@
 
 namespace Drupal\monolog\Form;
 
-use Drupal\Core\Form\FormStateInterface;
-
 /**
  * Add form for monolog profile add forms.
  */

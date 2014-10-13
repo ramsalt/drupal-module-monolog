@@ -9,6 +9,7 @@ namespace Drupal\monolog;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\EntityWithPluginBagsInterface;
+use Drupal\monolog\MonologHandlerInterface;
 
 /**
  * Provides an interface defining a monolog profile config entity.
@@ -16,38 +17,54 @@ use Drupal\Core\Entity\EntityWithPluginBagsInterface;
 interface MonologProfileInterface extends ConfigEntityInterface, EntityWithPluginBagsInterface {
 
   /**
-   * {@inheritdoc}
+   * Returns a handler instance.
+   * 
+   * @param string $handler
+   *   The handler plugin id.
+   * 
+   * @return \Drupal\monolog\MonologHandlerInterface
+   * 
+   * @see \Drupal\Component\Plugin\PluginBag::get()
    */
   public function getHandler($handler);
 
   /**
-   * {@inheritdoc}
+   * Returns all handlers of this profile.
+   * 
+   * @return \Drupal\Component\Plugin\PluginBag
    */
   public function getHandlers();
 
   /**
-   * {@inheritdoc}
+   * Adds a handlers to this profile.
+   * 
+   * @param array $configuration
+   *   The handler's configuration.
    */
   public function addHandler(array $configuration);
 
   /**
-   * {@inheritdoc}
+   * Deletes a handler from this profile.
+   * 
+   * @param \Drupal\monolog\MonologHandlerInterface $hander
+   *   The handler to delete.
+   * 
+   * @return $this
    */
-  public function getName();
+  public function deleteHandler(MonologHandlerInterface $handler);
+  
+  /**
+   * Get the handler's label.
+   * 
+   * @return $this
+   */
+  public function getLabel();
 
   /**
-   * {@inheritdoc}
+   * Set this profile's label.
+   * 
+   * @return self
    */
-  public function setName($name);
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isDisabled();
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setDisabled($disabled);
+  public function setLabel($label);
 
 }

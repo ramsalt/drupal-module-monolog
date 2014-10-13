@@ -23,16 +23,16 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 abstract class MonologHandlerBase extends PluginBase implements MonologHandlerInterface, ContainerFactoryPluginInterface {
 
   /**
-   * The image effect ID.
+   * The hanlder UUID.
    *
    * @var string
    */
   protected $uuid;
 
   /**
-   * The weight of the image effect.
+   * The weight of the handler.
    *
-   * @var int|string
+   * @var int
    */
   protected $weight = '';
 
@@ -101,11 +101,11 @@ abstract class MonologHandlerBase extends PluginBase implements MonologHandlerIn
    * {@inheritdoc}
    */
   public function setConfiguration(array $configuration) {
-    $configuration += array(
-      'data' => array(),
+    $configuration += [
+      'data' => [],
       'uuid' => '',
       'weight' => '',
-    );
+    ];
     $this->configuration = $configuration['data'] + $this->defaultConfiguration();
     $this->uuid = $configuration['uuid'];
     $this->weight = $configuration['weight'];

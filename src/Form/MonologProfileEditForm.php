@@ -7,9 +7,12 @@
 
 namespace Drupal\monolog\Form;
 
+use Drupal\Component\Utility\String;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\monolog\ConfigurableMonologHandlerInterface;
 use Drupal\monolog\MonologHandlerManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -26,7 +29,7 @@ class MonologProfileEditForm extends MonologProfileFormBase {
   protected $handlerManager;
 
   /**
-   * Constructs an ImageStyleEditForm object.
+   * Constructs an MonologProfileEditForm object.
    *
    * @param \Drupal\Core\Entity\EntityStorageInterface $monolog_profile_storage
    *   The storage.
@@ -53,51 +56,98 @@ class MonologProfileEditForm extends MonologProfileFormBase {
    */
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
+    $form['#title'] = $this->t('Edit profile %label', ['%label' => $this->entity->label()]);
     $user_input = $form_state->getUserInput();
 
-    $form['channel_table'] = array(
-      '#theme' => 'monolog_handler_table',
-      '#tree' => TRUE,
-      '#monolog' => array(
-        'profile' => $this->entity,
-        'handler_info' => [],//monolog_handler_info_load_all(),
-      ),
-    );
-
-    foreach ($this->entity->getHandlers() as $name => $handler) {
-
-      $form['channel_table']['level'][$name] = array(
+    // Build the list of existing handlers.
+    $form['handlers'] = [
+      '#type' => 'table',
+      '#header' => [
+        $this->t('Label'),
+        $this->t('Handler'),
+        $this->t('Log level'),
+        $this->t('Bubble messages'),
+        $this->t('Weight'),
+        $this->t('Operations'),
+      ],
+      '#tabledrag' => [
+        [
+          'action' => 'order',
+          'relationship' => 'sibling',
+          'group' => 'monolog-handler-order-weight',
+        ],
+      ],
+      '#attributes' => [
+        'id' => 'monolog-profile-handlers',
+      ],
+      '#empty' => $this->t('This profile has no handlers. Add one by selecting an option below.'),
+      // Render handlers below parent elements.
+      '#weight' => 5,
+    ];
+    
+    foreach ($this->entity->getHandlers() as $handler) {
+      $key = $handler->getUuid();
+      $form['handlers'][$key]['#attributes']['class'][] = 'draggable';
+      $form['handlers'][$key]['#weight'] = isset($user_input['handlers']) ? $user_input['handlers'][$key]['weight'] : NULL;
+      $form['handlers'][$key]['label'] = [
+         '#markup' => String::checkPlain($handler->label()),
+      ];
+      $form['handlers'][$key]['handler'] = [
+         '#markup' => String::checkPlain($handler->getPluginId()),
+      ];
+      $form['handlers'][$key]['level'] = [
         '#type' => 'select',
-        '#title' => t('Logging level for @handler', array('@handler' => $handler->label())),
+        '#title' => $this->t('Logging level for @handler', ['@handler' => $handler->label()]),
         '#title_display' => 'invisible',
         '#default_value' => $handler->getConfiguration('level'),
         '#options' => monolog_level_options(),
-      );
+      ];
 
-      $form['channel_table']['bubble'][$name] = array(
+      $form['handlers'][$key]['bubble'] = [
         '#type' => 'select',
-        '#title' => t('Bubble setting for @handler', array('@handler' => $handler->label())),
+        '#title' => $this->t('Bubble setting for @handler', ['@handler' => $handler->label()]),
         '#title_display' => 'invisible',
         '#default_value' => $handler->getConfiguration('bubble'),
-        '#options' => array(
+        '#options' => [
           1 => t('Yes'),
           0 => t('No'),
-        ),
-      );
+        ],
+      ];
 
-      $weight_options = range(-10, 10);
-      $form['channel_table']['weight'][$name] = array(
-        '#type' => 'select',
-        '#title' => t('Weight for @handler', array('@handler' => $handler->label())),
+      $form['handlers'][$key]['weight'] = [
+        '#type' => 'weight',
+        '#title' => $this->t('Weight for @handler', ['@handler' => $handler->label()]),
         '#title_display' => 'invisible',
-        '#options' => array_combine($weight_options, $weight_options),
-        '#default_value' => $handler->getConfiguration('weight'),
-        '#attributes' => array('class' => array('monolog-handler-weight')),
-      );
+        '#default_value' => $handler->getConfiguration('weight') ?: 0,
+        '#attributes' => ['class' => ['monolog-handler-order-weight']],
+      ];      
+
+      $links = [];
+      $is_configurable = $handler instanceof ConfigurableMonologHandlerInterface;
+      if ($is_configurable) {
+        $links['edit'] = [
+          'title' => $this->t('Edit'),
+          'url' => Url::fromRoute('monolog.profile_handler_edit_form', [
+            'monolog_profile' => $this->entity->id(),
+            'monolog_handler' => $key,
+          ]),
+        ];
+      }
+      $links['delete'] = [
+        'title' => $this->t('Delete'),
+        'url' => Url::fromRoute('monolog.profile_handler_delete_form', [
+          'monolog_profile' => $this->entity->id(),
+          'monolog_handler' => $key,
+        ]),
+      ];
+      $form['handlers'][$key]['operations'] = [
+        '#type' => 'operations',
+        '#links' => $links,
+      ];
     }
 
-    // Build the new image effect addition form and add it to the effect list.
-    $new_handler_options = array();
+    // Build the new handler addition form and add it to the handlers list.
+    $new_handler_options = [];
     $handlers = $this->handlerManager->getDefinitions();
     uasort($handlers, function ($a, $b) {
       return strcasecmp($a['id'], $b['id']);
@@ -105,43 +155,46 @@ class MonologProfileEditForm extends MonologProfileFormBase {
     foreach ($handlers as $handler => $definition) {
       $new_handler_options[$handler] = $definition['label'];
     }
-    $form['handlers']['new'] = array(
+    $form['handlers']['new'] = [
       '#tree' => FALSE,
       '#weight' => isset($user_input['weight']) ? $user_input['weight'] : NULL,
-      '#attributes' => array('class' => array('draggable')),
-    );
-    $form['handlers']['new']['handler'] = array(
-      'data' => array(
-        'new' => array(
+      '#attributes' => ['class' => ['draggable']],
+    ];
+    $form['handlers']['new']['handler'] = [
+      'data' => [
+        'new' => [
           '#type' => 'select',
           '#title' => $this->t('Effect'),
           '#title_display' => 'invisible',
           '#options' => $new_handler_options,
           '#empty_option' => $this->t('Select a new handler'),
-        ),
-        array(
-          'add' => array(
+        ],
+        [
+          'add' => [
             '#type' => 'submit',
             '#value' => $this->t('Add'),
-            '#validate' => array('::handlerValidate'),
-            '#submit' => array('::submitForm', '::handlerSave'),
-          ),
-        ),
-      ),
-      '#prefix' => '<div class="image-style-new">',
+            '#validate' => ['::handlerValidate'],
+            '#submit' => ['::submitForm', '::handlerSave'],
+          ],
+        ],
+      ],
+      '#prefix' => '<div class="monolog-handler-new">',
       '#suffix' => '</div>',
-    );
-
-    $form['handlers']['new']['weight'] = array(
+    ];
+    
+    $form['handlers']['new']['label'] = $form['handlers']['new']['level'] = $form['handlers']['new']['bubble'] = [
+      'data' => [],
+    ];
+    $form['handlers']['new']['weight'] = [
       '#type' => 'weight',
       '#title' => $this->t('Weight for new effect'),
       '#title_display' => 'invisible',
       '#default_value' => count($this->entity->getHandlers()) + 1,
-      '#attributes' => array('class' => array('image-effect-order-weight')),
-    );
-    $form['handlers']['new']['operations'] = array(
-      'data' => array(),
-    );
+      '#attributes' => ['class' => ['monolog-handler-order-weight']],
+    ];
+    $form['handlers']['new']['operations'] = [
+      'data' => [],
+    ];
 
     return parent::form($form, $form_state);
   }
@@ -168,20 +221,20 @@ class MonologProfileEditForm extends MonologProfileFormBase {
     if (is_subclass_of($handler['class'], '\Drupal\monolog\ConfigurableMonologHandlerInterface')) {
       $form_state->setRedirect(
         'monolog.profile_handler_add_form',
-        array(
+        [
           'monolog_profile' => $this->entity->id(),
           'monolog_handler' => $form_state->getValue('new'),
-        ),
-        array('query' => array('weight' => $form_state->getValue('weight')))
+        ],
+        ['query' => ['weight' => $form_state->getValue('weight')]]
       );
     }
     // If there's no form, immediately add the handler.
     else {
-      $handler = array(
+      $handler = [
         'id' => $handler['id'],
-        'data' => array(),
+        'data' => [],
         'weight' => $form_state->getValue('weight'),
-      );
+      ];
       $handler_id = $this->entity->addHandler($handler);
       $this->entity->save();
       if (!empty($handler_id)) {
@@ -190,4 +243,43 @@ class MonologProfileEditForm extends MonologProfileFormBase {
     }
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    // Update handlers weights.
+    if (!$form_state->isValueEmpty('handlers')) {
+      $this->updateHandlerWeights($form_state->getValue('handlers'));
+    }
+
+    parent::submitForm($form, $form_state);
+  }
+
+  /**
+   * Updates handler weights.
+   *
+   * @param array $effects
+   *   Associative array with effects having effect uuid as keys and and array
+   *   with effect data as values.
+   */
+  protected function updateHandlerWeights(array $handlers) {
+    foreach ($handlers as $uuid => $data) {
+      if ($this->entity->getHandlers()->has($uuid)) {
+        $this->entity->getHandler($uuid)->setWeight($data['weight']);
+      }
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function copyFormValuesToEntity(EntityInterface $entity, array $form, FormStateInterface $form_state) {
+    foreach ($form_state->getValues() as $key => $value) {
+      // Do not copy handlers here, see self::updateEffectWeights().
+      if ($key != 'handlers') {
+        $entity->set($key, $value);
+      }
+    }
+  }
+  
 }

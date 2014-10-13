@@ -433,7 +433,6 @@ function theme_monolog_handler_table(array $variables) {
     );
   }
 
-  //drupal_add_tabledrag('monolog-handler-table', 'order', 'sibling', 'monolog-handler-weight');
   $output .= drupal_render_children($variables['element']);
   $output .= _theme('table', array(
     'caption' => t('Logging Handlers'),
@@ -441,6 +440,11 @@ function theme_monolog_handler_table(array $variables) {
     'rows' => $rows,
     'empty' => t('This profile has no handlers. Add one by clicking the "Add handler" link above.'),
     'attributes' => array('id' => 'monolog-handler-table'),
+    'tabledrag' => array(
+      'action' => 'order',
+      'relationship' => 'sibling',
+      'group' => 'monolog-handler-weight',
+    ),
   ));
 
   return $output;

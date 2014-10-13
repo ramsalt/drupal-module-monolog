@@ -34,8 +34,6 @@ class MonologProfileListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    $base_path = 'admin/config/development/monolog/profile/' . $entity->id();
-
     // @todo Make a theme function.
     $label = String::checkPlain($entity->label());
     $machine_name = '<small>' . $this->t('(Machine name: @name)', array('@name' => $entity->id())) . '</small>';
@@ -43,15 +41,14 @@ class MonologProfileListBuilder extends ConfigEntityListBuilder {
     foreach ($entity->getHandlers()->sort() as $handler) {
       $handlers[] = $handler->label();
     }
-    $row = array(
+    $row = [
       'label' => $label . ' ' . $machine_name,
       'handlers' => join(', ', $handlers),
-    );
+    ];
 
     if (empty($row['handlers'])) {
       $row['handlers'] = '<em>No handlers</em>';
     }
-
 
     return $row + parent::buildRow($entity);
   }

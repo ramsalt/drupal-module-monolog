@@ -48,7 +48,7 @@ abstract class MonologProfileFormBase extends EntityForm {
    */
   public function form(array $form, FormStateInterface $form_state) {
 
-    $form['label'] = array(
+    $form['label'] = [
       '#title' => t('Label'),
       '#type' => 'textfield',
       '#default_value' => $this->entity->label(),
@@ -56,18 +56,18 @@ abstract class MonologProfileFormBase extends EntityForm {
       '#required' => TRUE,
       '#maxlength' => 255,
       '#size' => 30,
-    );
+    ];
 
-    $form['name'] = array(
+    $form['name'] = [
       '#type' => 'machine_name',
       '#default_value' => $this->entity->id(),
       '#maxlength' => 32,
-      '#machine_name' => array(
-        'exists' => array($this->monologProfileStorage, 'load'),
-      ),
+      '#machine_name' => [
+        'exists' => [$this->monologProfileStorage, 'load'],
+      ],
       '#disabled' => $this->entity->id(),
       '#description' => t('The machine readable name of the logging profile. This value can only contain letters, numbers, and underscores.'),
-    );
+    ];
 
     return parent::form($form, $form_state);
   }

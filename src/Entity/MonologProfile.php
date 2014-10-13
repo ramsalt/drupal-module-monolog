@@ -8,8 +8,8 @@
 namespace Drupal\monolog\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
-use Drupal\Core\Entity\EntityWithPluginBagsInterface;
 use Drupal\Core\Plugin\DefaultPluginBag;
+use Drupal\monolog\MonologHandlerInterface;
 use Drupal\monolog\MonologProfileInterface;
 
 /**
@@ -119,30 +119,24 @@ class MonologProfile extends ConfigEntityBase implements MonologProfileInterface
   /**
    * {@inheritdoc}
    */
-  public function getName() {
-    return $this->get('name');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setName($name) {
-    $this->set('name', $name);
+  public function deleteHandler(MonologHandlerInterface $handler) {
+    $this->getHandlers()->removeInstanceId($handler->getUuid());
+    $this->save();
     return $this;
   }
-
+  
   /**
    * {@inheritdoc}
    */
-  public function isDisabled() {
-    return $this->get('disabled');
+  public function getLabel() {
+    return $this->get('label');
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setDisabled($disabled) {
-    $this->set('disabled', (bool) $disabled);
+  public function setLabel($label) {
+    $this->set('label', $label);
     return $this;
   }
 

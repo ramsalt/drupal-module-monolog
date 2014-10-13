@@ -7,8 +7,6 @@
 
 namespace Drupal\monolog\Plugin\MonologHandler;
 
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Image\ImageInterface;
 use Drupal\monolog\MonologHandlerInterface;
 use Drupal\monolog\MonologHandlerBase;
 use Monolog\Handler\NullHandler;
