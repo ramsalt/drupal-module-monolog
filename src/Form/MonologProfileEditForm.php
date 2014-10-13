@@ -248,27 +248,17 @@ class MonologProfileEditForm extends MonologProfileFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // Update handlers weights.
-    if (!$form_state->isValueEmpty('handlers')) {
-      $this->updateHandlerWeights($form_state->getValue('handlers'));
+    foreach ($form_state->getValue('handlers') as $uuid => $data) {
+      // Update handlers weights.
+      if ($this->entity->getHandlers()->has($uuid)) {
+        $handler = $this->entity->getHandler($uuid);
+        $handler->setWeight($data['weight'])
+          ->setLevel($data['level'])
+          ->setAllowsBubblingUp($data['bubble']);
+      }
     }
 
     parent::submitForm($form, $form_state);
-  }
-
-  /**
-   * Updates handler weights.
-   *
-   * @param array $effects
-   *   Associative array with effects having effect uuid as keys and and array
-   *   with effect data as values.
-   */
-  protected function updateHandlerWeights(array $handlers) {
-    foreach ($handlers as $uuid => $data) {
-      if ($this->entity->getHandlers()->has($uuid)) {
-        $this->entity->getHandler($uuid)->setWeight($data['weight']);
-      }
-    }
   }
 
   /**
@@ -276,7 +266,7 @@ class MonologProfileEditForm extends MonologProfileFormBase {
    */
   protected function copyFormValuesToEntity(EntityInterface $entity, array $form, FormStateInterface $form_state) {
     foreach ($form_state->getValues() as $key => $value) {
-      // Do not copy handlers here, see self::updateEffectWeights().
+      // Do not copy handlers here, see self::submitForm().
       if ($key != 'handlers') {
         $entity->set($key, $value);
       }

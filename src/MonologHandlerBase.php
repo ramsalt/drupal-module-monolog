@@ -96,6 +96,14 @@ abstract class MonologHandlerBase extends PluginBase implements MonologHandlerIn
   /**
    * {@inheritdoc}
    */
+  public function setAllowsBubblingUp($bubble){
+    $this->configuration['bubble'] = $bubble;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function allowsBubblingUp() {
     return $this->configuration['bubble'];
   }

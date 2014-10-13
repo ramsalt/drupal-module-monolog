@@ -79,6 +79,16 @@ interface MonologHandlerInterface extends ConfigurablePluginInterface {
   public function allowsBubblingUp();
 
   /**
+   * Sets the allowbubbling up flag for this handler.
+   *
+   * @param bool $bubble
+   *   Whether this handler should allow bubbling up.
+   *
+   * @return $this
+   */
+  public function setAllowsBubblingUp($bubble);
+
+  /**
    * Loads the handler class and returns an instance of it.
    *
    * @todo Move this to container.
