@@ -45,115 +45,6 @@ function monolog_hook_info() {
 }
 
 /**
- * Implements hook_menu().
- */
-function monolog_menu() {
-  $items = array();
-
-  $base_path = 'admin/config/development/monolog';
-  $base_item = array(
-    'access arguments' => array('administer site configuration'),
-    'file' => 'monolog.admin.inc',
-  );
-
-  $items[$base_path] = array(
-    'title' => 'Monolog',
-    'description' => 'Configure Monolog channels and profiles.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('monolog_channel_form'),
-  ) + $base_item;
-
-  $items[$base_path . '/channel'] = array(
-    'title' => 'Channels',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -10,
-  );
-
-  $items[$base_path . '/profile'] = array(
-    'title' => 'Logging Profiles',
-    'description' => 'Configure logging channels.',
-    'page callback' => 'monolog_profile_page',
-    'type' => MENU_LOCAL_TASK,
-    'weight' => -5,
-  ) + $base_item;
-
-  $items[$base_path . '/profile/add'] = array(
-    'title' => 'Add profile',
-    'description' => 'Add a logging profile',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('monolog_profile_form'),
-    'type' => MENU_LOCAL_ACTION,
-  ) + $base_item;
-
-  $items[$base_path . '/profile/import'] = array(
-    'title' => 'Import profile',
-    'description' => 'Import a logging profile configuration',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('monolog_profile_import_form'),
-    'type' => MENU_LOCAL_ACTION,
-  ) + $base_item;
-
-  $items[$base_path . '/profile/%monolog_profile'] = array(
-    'title' => 'Edit',
-    'description' => 'Edit a logging profile',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('monolog_profile_form', 5),
-    'weight' => -10,
-  ) + $base_item;
-
-  $items[$base_path . '/profile/%monolog_profile/edit'] = array(
-    'title' => 'Edit',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -10,
-  );
-
-  $items[$base_path . '/profile/%monolog_profile/export'] = array(
-    'title' => 'Export',
-    'description' => 'Export a logging profile configuration',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('monolog_profile_export_form', 5),
-    'type' => MENU_LOCAL_TASK,
-  ) + $base_item;
-
-  $items[$base_path . '/profile/%monolog_profile/delete'] = array(
-    'title' => 'Delete',
-    'description' => 'Delete a logging profile',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('monolog_profile_delete_form', 5),
-  ) + $base_item;
-
-  $items[$base_path . '/profile/%monolog_profile/handler/add'] = array(
-    'title' => 'Add handler',
-    'description' => 'Add a logging handler to the profile.',
-    'page callback' => 'monolog_handler_page',
-    'page arguments' => array(5),
-  ) + $base_item;
-
-  $items[$base_path . '/profile/%monolog_profile/handler/add/%monolog_handler_info'] = array(
-    'title' => 'Configure handler',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('monolog_handler_form', 5),
-  ) + $base_item;
-
-  $items[$base_path . '/profile/%monolog_profile/handler/%monolog_handler/edit'] = array(
-    'title' => 'Configure handler',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('monolog_handler_form', 5, 7),
-    'load arguments' => array(5),
-  ) + $base_item;
-
-  $items[$base_path . '/profile/%monolog_profile/handler/%monolog_handler/delete'] = array(
-    'title' => 'Delete',
-    'description' => 'Remove a handler from the profile',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('monolog_handler_delete_form', 5, 7),
-    'load arguments' => array(5),
-  ) + $base_item;
-
-  return $items;
-}
-
-/**
  * Implements hook_theme().
  */
 function monolog_theme() {
@@ -169,15 +60,6 @@ function monolog_theme() {
       'function' => 'theme_monolog_handler_table',
     ),
   );
-}
-
-/**
- * Implements hook_ctools_plugin_api().
- */
-function monolog_ctools_plugin_api($owner, $api) {
-  if ('monolog' == $owner && 'monolog' == $api) {
-    return array('version' => 1);
-  }
 }
 
 /**
