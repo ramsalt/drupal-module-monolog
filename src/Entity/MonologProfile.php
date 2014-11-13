@@ -8,7 +8,7 @@
 namespace Drupal\monolog\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
-use Drupal\Core\Plugin\DefaultPluginBag;
+use Drupal\Core\Plugin\DefaultLazyPluginCollection;
 use Drupal\monolog\MonologHandlerInterface;
 use Drupal\monolog\MonologProfileInterface;
 
@@ -85,7 +85,7 @@ class MonologProfile extends ConfigEntityBase implements MonologProfileInterface
   /**
    * {@inheritdoc}
    */
-  public function getPluginBags() {
+  public function getPluginCollections() {
     return array('handlers' => $this->getHandlers());
   }
 
@@ -101,7 +101,7 @@ class MonologProfile extends ConfigEntityBase implements MonologProfileInterface
    */
   public function getHandlers() {
     if (!$this->handlersBag) {
-      $this->handlersBag = new DefaultPluginBag($this->getMonologHandlerPluginManager(), $this->handlers);
+      $this->handlersBag = new DefaultLazyPluginCollection($this->getMonologHandlerPluginManager(), $this->handlers);
       $this->handlersBag->sort();
     }
     return $this->handlersBag;

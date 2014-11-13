@@ -141,7 +141,7 @@ abstract class MonologHandlerBase extends PluginBase implements MonologHandlerIn
     return [
       'label' => (string) $this->pluginDefinition['label'],
       'bubble' => 1,
-      'level' => Logger::INFO,
+      'level' => 200,//Logger::INFO,
       'weight' => 0,
     ];
   }
