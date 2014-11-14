@@ -1,4 +1,0 @@
-monolog_logging.admin_settings:
-  title: 'Watchdog Settings'
-  route_name: monolog_logging.admin_settings
-  base_route: monolog.channel_settings

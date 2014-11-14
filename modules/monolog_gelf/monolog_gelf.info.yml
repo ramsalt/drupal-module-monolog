@@ -1,0 +1,7 @@
+name: Monolog GELF
+type: module
+description: Logs records to a Graylog2 server.
+dependencies:
+ - monolog
+core: 7.x
+package: Development

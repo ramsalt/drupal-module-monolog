@@ -71,7 +71,7 @@ class MonologProfile extends ConfigEntityBase implements MonologProfileInterface
   /**
    * Holds the collection of handlers that are used by this profile.
    *
-   * @var \Drupal\Core\Plugin\DefaultPluginBag
+   * @var \Drupal\Core\Plugin\DefaultLazyPluginCollection
    */
   protected $handlersBag;
 

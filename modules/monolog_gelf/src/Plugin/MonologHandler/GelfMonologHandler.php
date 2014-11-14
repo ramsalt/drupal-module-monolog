@@ -5,7 +5,7 @@
  * Handler include for FirePHPHandler.
  */
 
-namespace Drupal\monolog\Plugin\MonologHandler;
+namespace Drupal\monolog_gelf\Plugin\MonologHandler;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\monolog\ConfigurableMonologHandlerInterface;

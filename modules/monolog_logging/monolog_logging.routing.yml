@@ -1,7 +1,0 @@
-monolog_logging.admin_settings:
-  path: '/admin/config/development/monolog/watchdog'
-  defaults:
-    _form: '\Drupal\monolog_logging\Form\SettingsForm'
-    _title: 'Watchdog Settings'
-  requirements:
-    _permission: 'administer site configuration'

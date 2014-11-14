@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\monolog_logging\Form\SettingsForm.
+ * Contains \Drupal\monolog\Form\SettingsForm.
  */
 
-namespace Drupal\monolog_logging\Form;
+namespace Drupal\monolog\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfigFormBase;
@@ -19,16 +19,16 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'monolog_logging_settings_form';
+    return 'monolog_settings_form';
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('monolog_logging.settings');
+    $config = $this->config('monolog.settings');
 
-    $form['contexts'] = array(
+    $form['logging_contexts'] = array(
       '#type' => 'checkboxes',
       '#title' => $this->t('Include contexts in record'),
       '#description' => $this->t('Include the selected contexts in all log messages that are routed through Monolog from <code>watchdog()</code>.'),
@@ -63,8 +63,8 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->config('monolog_logging.settings')
-      ->set('contexts', $form_state->getValue('contexts'))
+    $this->config('monolog.settings')
+      ->set('logging_contexts', $form_state->getValue('contexts'))
       ->set('type_as_channel', $form_state->getValue('type_as_channel'))
       ->save();
     parent::submitForm($form, $form_state);

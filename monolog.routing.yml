@@ -60,3 +60,11 @@ monolog.profile_handler_delete_form:
     _form: '\Drupal\monolog\Form\MonologHandlerDeleteForm'
   requirements:
     _permission: 'administer site configuration'
+
+monolog.admin_settings:
+  path: '/admin/config/development/monolog/settings'
+  defaults:
+    _form: '\Drupal\monolog\Form\SettingsForm'
+    _title: 'Settings'
+  requirements:
+    _permission: 'administer site configuration'

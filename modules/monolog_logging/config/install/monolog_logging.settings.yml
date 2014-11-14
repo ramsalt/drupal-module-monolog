@@ -1,7 +1,0 @@
-type_as_channel: 1
-contexts:
-  uid: 'uid'
-  request_uri: 'request_uri'
-  referer: 'referer'
-  ip: 'ip'
-  link: 'link'

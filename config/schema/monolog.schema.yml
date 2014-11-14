@@ -9,6 +9,14 @@ monolog.settings:
       type: sequence
       sequence:
         - type: string
+    logging_contexts:
+      label: 'Contexts'
+      type: sequence
+      sequence:
+        - type: string
+    type_as_channel:
+      label: 'Type as channel'
+      type: integer
 
 monolog.profile.*:
   type: config_entity

@@ -141,6 +141,7 @@ abstract class MonologHandlerBase extends PluginBase implements MonologHandlerIn
     return [
       'label' => (string) $this->pluginDefinition['label'],
       'bubble' => 1,
+      // @todo For some reason Monolog Logger.php is not loaded upon installation
       'level' => 200,//Logger::INFO,
       'weight' => 0,
     ];
