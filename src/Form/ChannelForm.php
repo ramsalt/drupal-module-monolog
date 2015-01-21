@@ -89,4 +89,11 @@ class ChannelForm extends ConfigFormBase {
     drupal_set_message($this->t('The configuration options have been saved.'));
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  protected function getEditableConfigNames() {
+    return ['monolog.settings'];
+  }
+
 }

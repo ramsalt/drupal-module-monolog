@@ -65,7 +65,7 @@ class Logger extends BaseLogger {
 
   protected function getEnabledContexts() {
     if (!$this->enabledContexts && \Drupal::hasService('config.factory')) {
-      $this->enabledContexts = array_filter(\Drupal::config('monolog_logging.settings')->get('logging_contexts'));
+      $this->enabledContexts = array_filter(\Drupal::config('monolog.logging.settings')->get('logging_contexts'));
     }
 
     return $this->enabledContexts;

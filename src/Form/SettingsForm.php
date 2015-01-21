@@ -41,7 +41,7 @@ class SettingsForm extends ConfigFormBase {
         'link' => $this->t('An optional link provided by the module that called the watchdog() function.'),
         'request_id' => $this->t('A unique identifier for the page request or PHP process to logically group log messages.'),
       ),
-      '#default_value' => $config->get('contexts'),
+      '#default_value' => $config->get('logging_contexts'),
     );
 
     $form['drupal_compatibility'] = array(
@@ -64,10 +64,17 @@ class SettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('monolog.settings')
-      ->set('logging_contexts', $form_state->getValue('contexts'))
+      ->set('logging_contexts', $form_state->getValue('logging_contexts'))
       ->set('type_as_channel', $form_state->getValue('type_as_channel'))
       ->save();
     parent::submitForm($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getEditableConfigNames() {
+    return ['monolog.settings'];
   }
 
 }

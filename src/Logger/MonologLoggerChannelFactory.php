@@ -87,7 +87,13 @@ class MonologLoggerChannelFactory implements LoggerChannelFactoryInterface, Cont
       $channel_profiles[$channel_name] = $channel_info['default profile'] ? $channel_info['default profile'] : 'development';
     }
 
-    if (!$profile = MonologProfile::load($channel_profiles[$channel_name])) {
+    if (!$this->container->get('entity.manager')->getDefinition('monolog_profile', FALSE)) {
+      // When installing the entity type is not available yet.
+      return new NullLogger();
+    }
+
+    $profile = MonologProfile::load($channel_profiles[$channel_name]);
+    if (!$profile) {
       throw new \RuntimeException(sprintf('Logging profile not valid: %s', $profile));
     }
 
