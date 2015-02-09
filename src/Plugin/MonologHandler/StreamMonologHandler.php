@@ -28,8 +28,6 @@ class StreamMonologHandler extends ConfigurableMonologHandlerBase implements Con
    * {@inheritdoc}
    */
   public function getHandlerInstance() {
-    $directory = dirname($this->configuration['filepath']);
-    monolog_prepare_log_dir($directory);
     return new StreamHandler($this->configuration['filepath'], $this->configuration['level'], $this->configuration['bubble']);
   }
 
@@ -60,6 +58,8 @@ class StreamMonologHandler extends ConfigurableMonologHandlerBase implements Con
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     parent::submitConfigurationForm($form, $form_state);
     $this->configuration['filepath'] = $form_state->getValue('filepath');
+    $directory = dirname($this->configuration['filepath']);
+    monolog_prepare_log_dir($directory);
   }
 
   /**

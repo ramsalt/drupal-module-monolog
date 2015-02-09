@@ -8,6 +8,7 @@
 namespace Drupal\monolog\Form;
 
 use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\Xss;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
@@ -28,46 +29,45 @@ class ChannelForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    \Drupal::moduleHandler()->loadInclude('monolog', 'inc', 'monolog.crud');
     $channel_info = monolog_channel_info_load_all();
-    $channel_profiles = $this->config('monolog.settings')->get('monolog_channel_profiles');
+    $channel_profiles = $this->config('monolog.settings')->get('channel_profiles');
 
     $form['description'] = array(
-      '#markup' => t('<p>A <strong>channel</strong> identifies which part of the application a record is related to.</p><p>Each channel is associated with a <a href="@href">profile</a> that defines which handlers are used to process the record, for example a <em>syslog handler</em> or <em>stream wrapper handler</em>.</p>', array('@href' => '')),
+      '#markup' => $this->t('<p>A <strong>channel</strong> identifies which part of the application a record is related to.</p><p>Each channel is associated with a <a href="@href">profile</a> that defines which handlers are used to process the record, for example a <em>syslog handler</em> or <em>stream wrapper handler</em>.</p>', array('@href' => '')),
     );
 
-    $form['channel_table'] = array(
-      '#theme' => 'monolog_channel_table',
-      '#tree' => TRUE,
-      'channel_info' => array(
-        '#type' => 'value',
-        '#value' => $channel_info,
-      ),
-      'channels' => array(),
+    $form['channel_profiles'] = array(
+      '#type' => 'table',
+      '#caption' => $this->t('Logging Channels'),
+      '#header' => [
+        $this->t('Channel'),
+        $this->t('Logging Profile'),
+      ],
+      '#empty' => $this->t('There are no available logging channels.'),
+      '#attributes' => array('id' => 'monolog-channel-table'),
     );
 
-    foreach ($channel_info as $channel_name => $info) {
-      if (!isset($channel_profiles[$channel_name])) {
-        $channel_profiles[$channel_name] = $info['default profile'];
-      }
-      $profiles = \Drupal::entityManager()->getStorage('monolog_profile')->loadMultiple();
-      foreach ($profiles as $profile) {
-        $options[$profile->id()] = String::checkPlain($profile->label());
-      }
-      $form['channel_table']['channels'][$channel_name]['profile'] = array(
+    $profiles = \Drupal::entityManager()->getStorage('monolog_profile')->loadMultiple();
+    $profile_options = [];
+    foreach ($profiles as $profile) {
+      $profile_options[$profile->id()] = String::checkPlain($profile->label());
+    }
+
+    foreach ($channel_info as $channel_name => $channel) {
+      $form['channel_profiles'][$channel_name]['label'] = ['#markup' => String::checkPlain($channel['label'])];
+      $form['channel_profiles'][$channel_name]['profile'] = array(
         '#type' => 'select',
-        '#options' => $options,
-        '#default_value' => $channel_profiles[$channel_name],
+        '#options' => $profile_options,
+        '#default_value' => isset($channel_profiles[$channel_name]) ? $channel_profiles[$channel_name] : $channel['default profile'],
       );
     }
 
     $form['actions'] = array(
       '#type' => 'actions',
     );
-
     $form['actions']['submit'] = array(
       '#type' => 'submit',
-      '#value' => t('Save channel settings'),
+      '#value' => $this->t('Save channel settings'),
     );
 
     return parent::buildForm($form, $form_state);
@@ -79,7 +79,7 @@ class ChannelForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $channel_profiles = array();
     $values = $form_state->getValues();
-    foreach ($values['channel_table']['channels'] as $name => $channel) {
+    foreach ($values['channel_profiles'] as $name => $channel) {
       $channel_profiles[$name] = $channel['profile'];
     }
 

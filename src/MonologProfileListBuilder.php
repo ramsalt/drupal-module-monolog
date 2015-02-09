@@ -24,6 +24,7 @@ class MonologProfileListBuilder extends ConfigEntityListBuilder {
   public function buildHeader() {
     $header = [
       'label' => $this->t('Profile'),
+      'machine_name' => $this->t('Machine name'),
       'handlers' => $this->t('Handlers'),
     ];
 
@@ -34,20 +35,18 @@ class MonologProfileListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    // @todo Make a theme function.
-    $label = String::checkPlain($entity->label());
-    $machine_name = '<small>' . $this->t('(Machine name: @name)', array('@name' => $entity->id())) . '</small>';
     $handlers = [];
     foreach ($entity->getHandlers()->sort() as $handler) {
       $handlers[] = $handler->label();
     }
     $row = [
-      'label' => $label . ' ' . $machine_name,
-      'handlers' => join(', ', $handlers),
+      'label' => String::checkPlain($entity->label()),
+      'machine_name' => $entity->id(),
+      'handlers' => implode(', ', $handlers),
     ];
 
     if (empty($row['handlers'])) {
-      $row['handlers'] = '<em>No handlers</em>';
+      $row['handlers'] = '-';
     }
 
     return $row + parent::buildRow($entity);
@@ -60,7 +59,7 @@ class MonologProfileListBuilder extends ConfigEntityListBuilder {
     $build = parent::render();
     $build['#prefix'] = $this->t('<p>A <strong>profile</strong> is a collection of handlers that process the record.</p><p>Common examples of handlers are a <em>syslog handler</em> that routes records to the syslog and a <em>stream wrapper handler</em> that writes records to files and other streams.</p>');
 
-    $build['#empty'] = $this->t('There are no logging channels. Add one by clicking the "Add channel" link above.');
+    $build['#empty'] = $this->t('There are no logging profiles. Add one by clicking the "Add profile" link above.');
     $build['#caption'] = $this->t('Logging Profiles');
 
     return $build;

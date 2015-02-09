@@ -28,8 +28,6 @@ class RotatingFileMonologHandler extends ConfigurableMonologHandlerBase implemen
    * {@inheritdoc}
    */
   public function getHandlerInstance() {
-    $directory = dirname($this->configuration['filepath']);
-    monolog_prepare_log_dir($directory);
     return new RotatingFileHandler($this->configuration['filepath'], $this->configuration['max_files'], $this->configuration['level'], $this->configuration['bubble']);
   }
 
@@ -69,6 +67,8 @@ class RotatingFileMonologHandler extends ConfigurableMonologHandlerBase implemen
     parent::submitConfigurationForm($form, $form_state);
     $this->configuration['filepath'] = $form_state->getValue('filepath');
     $this->configuration['max_files'] = $form_state->getValue('max_files');
+    $directory = dirname($this->configuration['filepath']);
+    monolog_prepare_log_dir($directory);
   }
 
   /**

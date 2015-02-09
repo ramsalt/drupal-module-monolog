@@ -32,11 +32,6 @@ class MonologLoggerChannelFactory implements LoggerChannelFactoryInterface, Cont
    * {@inheritdoc}
    */
   public function get($channel) {
-    // @todo Investigate why this happens.
-    if (!function_exists('monolog')) {
-      $this->container->get('module_handler')->load('monolog');
-    }
-
     if (!isset($this->channels[$channel])) {
       try {
         $this->channels[$channel] = $this->getChannelInstance($channel);
@@ -94,7 +89,7 @@ class MonologLoggerChannelFactory implements LoggerChannelFactoryInterface, Cont
 
     $profile = MonologProfile::load($channel_profiles[$channel_name]);
     if (!$profile) {
-      throw new \RuntimeException(sprintf('Logging profile not valid: %s', $profile));
+      throw new \InvalidArgumentException(sprintf('Logging profile not valid: %s', $profile));
     }
 
     $logger = new Logger($channel_name);

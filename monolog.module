@@ -35,6 +35,67 @@ function monolog_theme() {
 }
 
 /**
+ * @defgroup monolog_invokers Monolog Hook Invoker Functions
+ * @{
+ * Functions that load information contained in hook implementations.
+ */
+
+/**
+ * Loads all channel definitions from hook_monolog_channel_info()
+ * implementations.
+ *
+ * @return array
+ */
+function monolog_channel_info_load_all() {
+  $channels = &drupal_static(__FUNCTION__);
+  if (!$channels) {
+    $module_handler = \Drupal::moduleHandler();
+    $channels = $module_handler->invokeAll('monolog_channel_info');
+    $module_handler->alter('monolog_channel_info', $channels);
+  }
+  return $channels;
+}
+
+/**
+ * Returns a single channel definition by its unique name.
+ *
+ * @param string $name
+ *   The unique identifier of the channel.
+ *
+ * @see monolog_channel_load_all()
+ */
+function monolog_channel_info_load($name) {
+  $channels = monolog_channel_info_load_all();
+  return isset($channels[$name]) ? $channels[$name] : FALSE;
+}
+
+/**
+ * @} End of "defgroup monolog_invokers".
+ */
+
+
+/**
+ * Implements hook_monolog_channel_info().
+ */
+function monolog_monolog_channel_info() {
+  $channels = array();
+
+  $channels['content'] = array(
+    'label' => t('Content'),
+    'default profile' => 'production',
+  );
+  $channels['php'] = array(
+    'label' => t('PHP'),
+    'default profile' => 'development',
+  );
+
+  // @todo Figure this out..Register all core channels here? Plugins are
+  // probably an overkill.
+
+  return $channels;
+}
+
+/**
  * Helper function that prepares a directory for logging.
  *
  * @param string $directory

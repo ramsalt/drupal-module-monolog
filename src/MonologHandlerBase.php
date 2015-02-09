@@ -9,7 +9,7 @@ namespace Drupal\monolog;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Plugin\PluginBase;
-use Drupal\monolog\Logger\Logger;
+use Drupal\monolog\Logger\MonologLogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -141,8 +141,7 @@ abstract class MonologHandlerBase extends PluginBase implements MonologHandlerIn
     return [
       'label' => (string) $this->pluginDefinition['label'],
       'bubble' => 1,
-      // @todo For some reason Monolog Logger.php is not loaded upon installation
-      'level' => 200,//Logger::INFO,
+      'level' => MonologLogLevel::INFO,
       'weight' => 0,
     ];
   }

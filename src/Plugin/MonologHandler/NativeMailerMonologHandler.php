@@ -28,13 +28,6 @@ class NativeMailerMonologHandler extends ConfigurableMonologHandlerBase implemen
    * {@inheritdoc}
    */
   public function getHandlerInstance() {
-    // @todo Switch to tokens.
-    if ('<site-mail>' == $this->configuration['to']) {
-      $options['to'] = \Drupal::config('system.site')->get('site_mail');
-    }
-    if ('<site-mail>' == $this->configuration['from']) {
-      $options['from'] = \Drupal::config('system.site')->get('site_mail');
-    }
     return new NativeMailerHandler($this->configuration['to'], $this->configuration['subject'], $this->configuration['from'], $this->configuration['level'], $this->configuration['bubble']);
   }
 
@@ -84,10 +77,12 @@ class NativeMailerMonologHandler extends ConfigurableMonologHandlerBase implemen
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
+    // @todo Inject.
+    $config = \Drupal::config('system.site');
     return parent::defaultConfiguration() + [
-      'to' => '<site-mail>',
-      'from' => '<site-mail>',
-      'subject' => $this->t('Log message sent by !site', array('!site' => \Drupal::config('system.site')->get('site_name'))),
+      'to' => $config->get('mail'),
+      'from' => $config->get('mail'),
+      'subject' => $this->t('Log message sent by !site', array('!site' => $config->get('name'))),
     ];
   }
 
