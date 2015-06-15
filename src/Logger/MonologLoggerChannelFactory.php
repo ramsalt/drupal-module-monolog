@@ -38,7 +38,7 @@ class MonologLoggerChannelFactory implements LoggerChannelFactoryInterface, Cont
       }
       catch (\InvalidArgumentException $e) {
         $this->channels[$channel] = new NullLogger();
-        if ($this->containet->get('current_user')->hasPermission('administer site configuration')) {
+        if ($this->container->get('current_user')->hasPermission('administer site configuration')) {
           drupal_set_message($e->getMessage(), 'error');
         }
       }
