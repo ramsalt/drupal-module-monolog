@@ -17,24 +17,6 @@ function monolog_hook_info() {
 }
 
 /**
- * Implements hook_theme().
- */
-function monolog_theme() {
-  return array(
-    'monolog_channel_table' => array(
-      'render element' => 'element',
-      'file' => 'monolog.admin.inc',
-      'function' => 'theme_monolog_channel_table',
-    ),
-    'monolog_handler_table' => array(
-      'render element' => 'element',
-      'file' => 'monolog.admin.inc',
-      'function' => 'theme_monolog_handler_table',
-    ),
-  );
-}
-
-/**
  * @defgroup monolog_invokers Monolog Hook Invoker Functions
  * @{
  * Functions that load information contained in hook implementations.
