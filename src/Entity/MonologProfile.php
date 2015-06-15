@@ -33,8 +33,8 @@ use Drupal\monolog\MonologProfileInterface;
  *     "label" = "label"
  *   },
  *   links = {
- *     "edit-form" = "entity.monolog_profile.edit_form",
- *     "delete-form" = "entity.monolog_profile.delete_form"
+ *     "edit-form" = "/admin/config/development/monolog/profile/{monolog_profile}",
+ *     "delete-form" = "/admin/config/development/monolog/profile/{monolog_profile}/delete"
  *   }
  * )
  */
