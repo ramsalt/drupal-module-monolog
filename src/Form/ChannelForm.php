@@ -7,7 +7,7 @@
 
 namespace Drupal\monolog\Form;
 
-use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -50,11 +50,11 @@ class ChannelForm extends ConfigFormBase {
     $profiles = \Drupal::entityManager()->getStorage('monolog_profile')->loadMultiple();
     $profile_options = [];
     foreach ($profiles as $profile) {
-      $profile_options[$profile->id()] = String::checkPlain($profile->label());
+      $profile_options[$profile->id()] = SafeMarkup::checkPlain($profile->label());
     }
 
     foreach ($channel_info as $channel_name => $channel) {
-      $form['channel_profiles'][$channel_name]['label'] = ['#markup' => String::checkPlain($channel['label'])];
+      $form['channel_profiles'][$channel_name]['label'] = ['#markup' => SafeMarkup::checkPlain($channel['label'])];
       $form['channel_profiles'][$channel_name]['profile'] = array(
         '#type' => 'select',
         '#options' => $profile_options,

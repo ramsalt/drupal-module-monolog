@@ -13,7 +13,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\monolog\ConfigurableMonologHandlerInterface;
 use Drupal\monolog\MonologProfileInterface;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
-use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\SafeMarkup;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -51,7 +51,7 @@ abstract class MonologHandlerFormBase extends FormBase {
       $this->handler = $this->prepareHandler($monolog_handler);
     }
     catch (PluginNotFoundException $e) {
-      throw new NotFoundHttpException(String::format("Invalid handler id: '@id'.", array('@id' => $monolog_handler)));
+      throw new NotFoundHttpException(SafeMarkup::format("Invalid handler id: '@id'.", array('@id' => $monolog_handler)));
     }
     $request = $this->getRequest();
 

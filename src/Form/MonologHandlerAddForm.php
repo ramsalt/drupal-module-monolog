@@ -10,7 +10,6 @@ namespace Drupal\monolog\Form;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\monolog\MonologHandlerManager;
 use Drupal\monolog\MonologProfileInterface;
-use Drupal\Component\Utility\String;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

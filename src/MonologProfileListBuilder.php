@@ -7,7 +7,7 @@
 
 namespace Drupal\monolog;
 
-use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 
@@ -40,7 +40,7 @@ class MonologProfileListBuilder extends ConfigEntityListBuilder {
       $handlers[] = $handler->label();
     }
     $row = [
-      'label' => String::checkPlain($entity->label()),
+      'label' => SafeMarkup::checkPlain($entity->label()),
       'machine_name' => $entity->id(),
       'handlers' => implode(', ', $handlers),
     ];

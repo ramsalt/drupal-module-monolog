@@ -6,7 +6,7 @@
 
 namespace Drupal\monolog\Logger;
 
-use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Logger\RfcLogLevel;
 use Monolog\Logger as BaseLogger;
 
@@ -49,7 +49,7 @@ class Logger extends BaseLogger {
     }
 
     // Replace Drupal style placeholders.
-    $message = strip_tags(String::format($message, $context));
+    $message = strip_tags(SafeMarkup::format($message, $context));
 
     $enabled_contexts = $this->getEnabledContexts();
     $context = array_intersect_key($context, $enabled_contexts);

@@ -7,7 +7,7 @@
 
 namespace Drupal\monolog\Form;
 
-use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -91,10 +91,10 @@ class MonologProfileEditForm extends MonologProfileFormBase {
       $form['handlers'][$key]['#attributes']['class'][] = 'draggable';
       $form['handlers'][$key]['#weight'] = isset($user_input['handlers']) ? $user_input['handlers'][$key]['weight'] : NULL;
       $form['handlers'][$key]['label'] = [
-         '#markup' => String::checkPlain($handler->label()),
+         '#markup' => SafeMarkup::checkPlain($handler->label()),
       ];
       $form['handlers'][$key]['handler'] = [
-         '#markup' => String::checkPlain($handler->getPluginId()),
+         '#markup' => SafeMarkup::checkPlain($handler->getPluginId()),
       ];
       $form['handlers'][$key]['level'] = [
         '#type' => 'select',
