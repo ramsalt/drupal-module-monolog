@@ -139,7 +139,7 @@ abstract class MonologHandlerBase extends PluginBase implements MonologHandlerIn
    */
   public function defaultConfiguration() {
     return [
-      'label' => (string) $this->pluginDefinition['label'],
+      'label' => $this->pluginDefinition['label'],
       'bubble' => 1,
       'level' => MonologLogLevel::INFO,
       'weight' => 0,
