@@ -8,7 +8,7 @@
 namespace Drupal\monolog\Logger;
 
 use Drupal\Core\StringTranslation\TranslationWrapper;
-use Monolog\Logger;
+use Monolog\Logger as MonologLogger;
 
 /**
  * @defgroup logging_severity_levels Logging severity levels
@@ -22,42 +22,42 @@ class MonologLogLevel {
   /**
    * Log message severity -- Emergency: system is unusable.
    */
-  const EMERGENCY = Logger::EMERGENCY;
+  const EMERGENCY = MonologLogger::EMERGENCY;
 
   /**
    * Log message severity -- Alert: action must be taken immediately.
    */
-  const ALERT = Logger::ALERT;
+  const ALERT = MonologLogger::ALERT;
 
   /**
    * Log message severity -- Critical conditions.
    */
-  const CRITICAL = Logger::CRITICAL;
+  const CRITICAL = MonologLogger::CRITICAL;
 
   /**
    * Log message severity -- Error conditions.
    */
-  const ERROR = Logger::ERROR;
+  const ERROR = MonologLogger::ERROR;
 
   /**
    * Log message severity -- Warning conditions.
    */
-  const WARNING = Logger::WARNING;
+  const WARNING = MonologLogger::WARNING;
 
   /**
    * Log message severity -- Normal but significant conditions.
    */
-  const NOTICE = Logger::NOTICE;
+  const NOTICE = MonologLogger::NOTICE;
 
   /**
    * Log message severity -- Informational messages.
    */
-  const INFO = Logger::INFO;
+  const INFO = MonologLogger::INFO;
 
   /**
    * Log message severity -- Debug-level messages.
    */
-  const DEBUG = Logger::DEBUG;
+  const DEBUG = MonologLogger::DEBUG;
 
   /**
    * An array with the severity levels as keys and labels as values.
