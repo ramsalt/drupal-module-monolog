@@ -48,8 +48,10 @@ class Logger extends BaseLogger {
       $level = $this->levelTranslation[$level];
     }
 
-    // Replace Drupal style placeholders.
-    $message = strip_tags(SafeMarkup::format($message, $context));
+    // Populate the message placeholders and then replace them in the message.
+    $parser = \Drupal::service('logger.log_message_parser');
+    $message_placeholders = $parser->parseMessagePlaceholders($message, $context);
+    $message = empty($message_placeholders) ? $message : strtr($message, $message_placeholders);
 
     $enabled_contexts = $this->getEnabledContexts();
     $context = array_intersect_key($context, $enabled_contexts);
