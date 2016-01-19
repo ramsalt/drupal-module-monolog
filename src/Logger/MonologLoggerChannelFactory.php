@@ -29,6 +29,13 @@ class MonologLoggerChannelFactory implements LoggerChannelFactoryInterface, Cont
   protected $channels = array();
 
   /**
+   * Array of enabled processors.
+   *
+   * @var array
+   */
+  protected $enabledProcessors;
+
+  /**
    * {@inheritdoc}
    */
   public function get($channel) {
@@ -98,8 +105,30 @@ class MonologLoggerChannelFactory implements LoggerChannelFactoryInterface, Cont
       $logger->pushHandler($instance);
     }
 
+    /** @var \Drupal\monolog\Logger\Processor\ProcessorManagerInterface $processorManager */
+    $processorManager = $this->container->get('monolog.processor_manager');
+    foreach ($this->getEnabledProcessors() as $processor) {
+      $instance = $processorManager->getProcessor($processor);
+      $logger->pushProcessor($instance);
+    }
+
     return $logger;
   }
 
+  /**
+   * Returns user enabled processors.
+   *
+   * @return array
+   */
+  protected function getEnabledProcessors() {
+    if (!$this->enabledProcessors && $this->container->has('config.factory')) {
+      $this->enabledProcessors = array_filter(
+        $this->container->get('config.factory')
+          ->get('monolog.settings')
+          ->get('logging_processors')
+      );
+    }
 
+    return $this->enabledProcessors;
+  }
 }

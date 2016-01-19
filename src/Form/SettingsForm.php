@@ -7,13 +7,42 @@
 
 namespace Drupal\monolog\Form;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfigFormBase;
+use Drupal\monolog\Logger\Processor\ProcessorManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Configures monolog logging settings for this site.
  */
 class SettingsForm extends ConfigFormBase {
+
+  /**
+   * @var \Drupal\monolog\Logger\Processor\ProcessorManagerInterface
+   */
+  protected $processorManager;
+
+  /**
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The factory for configuration objects.
+   * @param \Drupal\monolog\Logger\Processor\ProcessorManagerInterface $processor_manager
+   */
+  public function __construct(ConfigFactoryInterface $config_factory, ProcessorManagerInterface $processor_manager) {
+    $this->processorManager = $processor_manager;
+
+    parent::__construct($config_factory);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('config.factory'),
+      $container->get('monolog.processor_manager')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -26,22 +55,22 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $processors = $this->processorManager->getProcessors();
+
+    $options = [];
+    foreach ($processors as $processor) {
+      /** @var \Drupal\monolog\Logger\Processor\ProcessorInterface $processor */
+      $options[$processor->getType()] = $processor->getDescription();
+    }
+
     $config = $this->config('monolog.settings');
 
-    $form['logging_contexts'] = array(
+    $form['logging_processors'] = array(
       '#type' => 'checkboxes',
-      '#title' => $this->t('Include contexts in record'),
-      '#description' => $this->t('Include the selected contexts in all log messages that are routed through Monolog from <code>watchdog()</code>.'),
-      '#options' => array(
-        'type' => $this->t('The type of message for this entry.'),
-        'uid' => $this->t('The user ID for the user who was logged in when the event happened.'),
-        'request_uri' => $this->t('The request URI for the page the event happened in.'),
-        'referer' => $this->t('The page that referred the user to the page where the event occurred.'),
-        'ip' => $this->t('The IP address where the request for the page came from.'),
-        'link' => $this->t('An optional link provided by the module that called the watchdog() function.'),
-        'request_id' => $this->t('A unique identifier for the page request or PHP process to logically group log messages.'),
-      ),
-      '#default_value' => $config->get('logging_contexts'),
+      '#title' => $this->t('Include extra data in record'),
+      '#description' => $this->t('Include the selected extra data in all log messages that are routed through Monolog from <code>watchdog()</code>.'),
+      '#options' => $options,
+      '#default_value' => $config->get('logging_processors'),
     );
 
     $form['drupal_compatibility'] = array(
@@ -64,7 +93,7 @@ class SettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('monolog.settings')
-      ->set('logging_contexts', $form_state->getValue('logging_contexts'))
+      ->set('logging_processors', $form_state->getValue('logging_processors'))
       ->set('type_as_channel', $form_state->getValue('type_as_channel'))
       ->save();
     parent::submitForm($form, $form_state);

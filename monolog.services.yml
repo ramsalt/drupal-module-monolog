@@ -2,3 +2,42 @@ services:
   plugin.manager.monolog.handler:
     class: Drupal\monolog\MonologHandlerManager
     parent: default_plugin_manager
+
+  monolog.processor_manager:
+    class: Drupal\monolog\Logger\Processor\ProcessorManager
+    tags:
+      - { name: service_collector, tag: monolog_processor, call: addProcessor }
+
+  monolog.processor.type:
+    class: Drupal\monolog\Logger\Processor\TypeProcessor
+    tags:
+      - { name: monolog_processor }
+
+  monolog.processor.uid:
+    class: Drupal\monolog\Logger\Processor\UidProcessor
+    arguments: ['@current_user']
+    tags:
+      - { name: monolog_processor }
+
+  monolog.processor.request_uri:
+    class: Drupal\monolog\Logger\Processor\RequestUriProcessor
+    arguments: ['@request_stack']
+    tags:
+      - { name: monolog_processor }
+
+  monolog.processor.referer:
+    class: Drupal\monolog\Logger\Processor\RefererProcessor
+    arguments: ['@request_stack']
+    tags:
+      - { name: monolog_processor }
+
+  monolog.processor.ip:
+    class: Drupal\monolog\Logger\Processor\IpProcessor
+    arguments: ['@request_stack']
+    tags:
+      - { name: monolog_processor }
+
+  monolog.processor.request_id:
+    class: Drupal\monolog\Logger\Processor\RequestIdProcessor
+    tags:
+      - { name: monolog_processor }

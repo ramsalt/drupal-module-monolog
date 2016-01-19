@@ -21,13 +21,6 @@ use Monolog\Logger as BaseLogger;
 class Logger extends BaseLogger {
 
   /**
-   * An array of enabled context keys.
-   *
-   * @var array
-   */
-  protected $enabledContexts = [];
-
-  /**
    * Map of RFC 5424 log constants to Monolog log constants.
    *
    * @var array
@@ -53,24 +46,6 @@ class Logger extends BaseLogger {
     $message_placeholders = $parser->parseMessagePlaceholders($message, $context);
     $message = empty($message_placeholders) ? $message : strtr($message, $message_placeholders);
 
-    $enabled_contexts = $this->getEnabledContexts();
-    $context = array_intersect_key($context, $enabled_contexts);
-    if (isset($enabled_contexts['request_id'])) {
-      $context['request_id'] = monolog_request_id();
-    }
-    if (empty($context)) {
-      $context = [];
-    }
-
     parent::addRecord($level, $message, $context);
   }
-
-  protected function getEnabledContexts() {
-    if (!$this->enabledContexts && \Drupal::hasService('config.factory')) {
-      $this->enabledContexts = array_filter(\Drupal::config('monolog.settings')->get('logging_contexts'));
-    }
-
-    return $this->enabledContexts;
-  }
-
 }

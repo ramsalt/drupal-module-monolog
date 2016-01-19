@@ -9,8 +9,8 @@ monolog.settings:
       type: sequence
       sequence:
         - type: string
-    logging_contexts:
-      label: 'Contexts'
+    logging_processors:
+      label: 'Processors'
       type: sequence
       sequence:
         - type: string
