@@ -1,13 +1,16 @@
 <?php
 
-namespace Drupal\monolog\Logger\Processor;
+/*
+ * @file
+ * Contains \Drupal\monolog\Logger\Processor\RequestUriProcessor.
+ */
 
-use Drupal\Core\StringTranslation\TranslatableMarkup;
+namespace Drupal\monolog\Logger\Processor;
 
 /**
  * Class RequestUriProcessor.php
  */
-class RequestUriProcessor extends AbstractRequestProcessor implements ProcessorInterface {
+class RequestUriProcessor extends AbstractRequestProcessor {
 
   /**
    * @param array $record
@@ -22,17 +25,4 @@ class RequestUriProcessor extends AbstractRequestProcessor implements ProcessorI
     return $record;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function getType() {
-    return 'request_uri';
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getDescription() {
-    return new TranslatableMarkup('The request URI for the page the event happened in.');
-  }
 }

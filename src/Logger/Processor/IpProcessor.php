@@ -1,13 +1,16 @@
 <?php
 
-namespace Drupal\monolog\Logger\Processor;
+/*
+ * @file
+ * Contains \Drupal\monolog\Logger\Processor\IpProcessor.
+ */
 
-use Drupal\Core\StringTranslation\TranslatableMarkup;
+namespace Drupal\monolog\Logger\Processor;
 
 /**
  * Class IpProcessor
  */
-class IpProcessor extends AbstractRequestProcessor implements ProcessorInterface {
+class IpProcessor extends AbstractRequestProcessor {
 
   /**
    * @param array $record
@@ -22,17 +25,4 @@ class IpProcessor extends AbstractRequestProcessor implements ProcessorInterface
     return $record;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function getType() {
-    return 'ip';
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getDescription() {
-    return new TranslatableMarkup('The IP address where the request for the page came from.');
-  }
 }

@@ -1,19 +1,23 @@
 <?php
 
+/*
+ * @file
+ * Contains \Drupal\monolog\Logger\Processor\CurrentUserProcessor.
+ */
+
 namespace Drupal\monolog\Logger\Processor;
 
 use Drupal\Core\Session\AccountProxyInterface;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Class UidProcessor
  */
-class UidProcessor implements ProcessorInterface {
+class CurrentUserProcessor {
 
   /**
    * @var \Drupal\Core\Session\AccountProxyInterface
    */
-  private $accountProxy;
+  protected $accountProxy;
 
   /**
    * @param \Drupal\Core\Session\AccountProxyInterface $account_proxy
@@ -34,17 +38,4 @@ class UidProcessor implements ProcessorInterface {
     return $record;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function getType() {
-    return 'uid';
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getDescription() {
-    return new TranslatableMarkup('The user ID for the user who was logged in when the event happened.');
-  }
 }

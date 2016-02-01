@@ -1,7 +1,8 @@
 <?php
 
-/**
- * Monolog extension for use with Drupal.
+/*
+ * @file
+ * Contains \Drupal\monolog\Logger\Logger.
  */
 
 namespace Drupal\monolog\Logger;
@@ -40,11 +41,6 @@ class Logger extends BaseLogger {
     if (array_key_exists($level, $this->levelTranslation)) {
       $level = $this->levelTranslation[$level];
     }
-
-    // Populate the message placeholders and then replace them in the message.
-    $parser = \Drupal::service('logger.log_message_parser');
-    $message_placeholders = $parser->parseMessagePlaceholders($message, $context);
-    $message = empty($message_placeholders) ? $message : strtr($message, $message_placeholders);
 
     parent::addRecord($level, $message, $context);
   }

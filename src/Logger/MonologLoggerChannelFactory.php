@@ -78,57 +78,23 @@ class MonologLoggerChannelFactory implements LoggerChannelFactoryInterface, Cont
     }
 
     if (!$this->container) {
-      // We need the container to read profiles etc.
+      // We need the container to read parameters etc.
       return new NullLogger();
-    }
-
-    $channel_profiles = $this->container->get('config.factory')->get('monolog.settings')->get('channel_profiles');
-    if (!isset($channel_profiles[$channel_name])) {
-      $this->container->get('module_handler')->loadInclude('monolog', 'inc', 'monolog.crud');
-      $channel_info = monolog_channel_info_load($channel_name);
-      $channel_profiles[$channel_name] = $channel_info['default profile'] ? $channel_info['default profile'] : 'development';
-    }
-
-    if (!$this->container->get('entity.manager')->getDefinition('monolog_profile', FALSE)) {
-      // When installing the entity type is not available yet.
-      return new NullLogger();
-    }
-
-    $profile = MonologProfile::load($channel_profiles[$channel_name]);
-    if (!$profile) {
-      throw new \InvalidArgumentException(sprintf('Logging profile not valid: %s', $profile));
     }
 
     $logger = new Logger($channel_name);
-    foreach ($profile->getHandlers()->sort() as $handler) {
-      $instance = $handler->getHandlerInstance();
-      $logger->pushHandler($instance);
+    $parameters = $this->container->getParameter('monolog.channel_handlers');
+    $handlers = array_key_exists($channel_name, $parameters) ? $parameters[$channel_name] : $parameters['default'];
+ 
+    foreach ($handlers as $handler) {
+      $logger->pushHandler($this->container->get('monolog.handler.' . $handler));
     }
 
-    /** @var \Drupal\monolog\Logger\Processor\ProcessorManagerInterface $processorManager */
-    $processorManager = $this->container->get('monolog.processor_manager');
-    foreach ($this->getEnabledProcessors() as $processor) {
-      $instance = $processorManager->getProcessor($processor);
-      $logger->pushProcessor($instance);
+    foreach ($this->container->getParameter('monolog.processors') as $processor) {
+      $logger->pushProcessor($this->container->get('monolog.processor.' . $processor));
     }
 
     return $logger;
   }
 
-  /**
-   * Returns user enabled processors.
-   *
-   * @return array
-   */
-  protected function getEnabledProcessors() {
-    if (!$this->enabledProcessors && $this->container->has('config.factory')) {
-      $this->enabledProcessors = array_filter(
-        $this->container->get('config.factory')
-          ->get('monolog.settings')
-          ->get('logging_processors')
-      );
-    }
-
-    return $this->enabledProcessors;
-  }
 }

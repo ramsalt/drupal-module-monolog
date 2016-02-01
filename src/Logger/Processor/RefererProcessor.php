@@ -1,13 +1,16 @@
 <?php
 
-namespace Drupal\monolog\Logger\Processor;
+/*
+ * @file
+ * Contains \Drupal\monolog\Logger\Processor\RefererProcessor.
+ */
 
-use Drupal\Core\StringTranslation\TranslatableMarkup;
+namespace Drupal\monolog\Logger\Processor;
 
 /**
  * Class RefererProcessor
  */
-class RefererProcessor extends AbstractRequestProcessor implements ProcessorInterface {
+class RefererProcessor extends AbstractRequestProcessor {
 
   /**
    * @param array $record
@@ -22,17 +25,4 @@ class RefererProcessor extends AbstractRequestProcessor implements ProcessorInte
     return $record;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function getType() {
-    return 'referer';
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getDescription() {
-    return new TranslatableMarkup('The page that referred the user to the page where the event occurred.');
-  }
 }
