@@ -57,6 +57,7 @@ class MonologLoggerChannelFactory implements LoggerChannelFactoryInterface, Cont
    */
   public function addLogger(LoggerInterface $logger, $priority = 0) {
     // No-op, we have handlers which are services and configured in the services.yml file.
+    // @see https://www.drupal.org/node/2411683
   }
 
   /**
