@@ -5,4 +5,3 @@ dependencies:
   - composer_manager
 core: 8.x
 package: Development
-configure: monolog.channel_settings

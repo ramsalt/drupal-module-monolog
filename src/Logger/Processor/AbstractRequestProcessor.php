@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\monolog\Logger\Processor\AbstractRequestProcessor.
+ */
+
 namespace Drupal\monolog\Logger\Processor;
 
 use Symfony\Component\HttpFoundation\RequestStack;

@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @file
  * Contains \Drupal\monolog\Logger\Processor\RequestUriProcessor.
  */

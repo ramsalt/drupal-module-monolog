@@ -1,8 +1,8 @@
 <?php
 
-/*
+/**
  * @file
- * Contains \Drupal\monolog\Logger\Processor\IpProcessor.
+ * Contains \Drupal\monolog\Logger\Processor\MessagePlaceholderProcessor.
  */
 
 namespace Drupal\monolog\Logger\Processor;
@@ -12,7 +12,7 @@ use Drupal\Core\Logger\LogMessageParserInterface;
 /**
  * Parse and replace message placeholders.
  */
-class MessagePlaceholderProcessor{
+class MessagePlaceholderProcessor {
 
   /**
    * The message's placeholders parser.

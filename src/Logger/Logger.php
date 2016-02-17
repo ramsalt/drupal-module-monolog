@@ -1,13 +1,12 @@
 <?php
 
-/*
+/**
  * @file
  * Contains \Drupal\monolog\Logger\Logger.
  */
 
 namespace Drupal\monolog\Logger;
 
-use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Logger\RfcLogLevel;
 use Monolog\Logger as BaseLogger;
 

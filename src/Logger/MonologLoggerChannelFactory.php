@@ -2,14 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\Core\Logger\MonologLoggingLoggerChannelFactory.
+ * Contains \Drupal\Core\Logger\MonologLoggerChannelFactory.
  */
 
 namespace Drupal\monolog\Logger;
 
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\monolog\Logger\Logger;
-use Drupal\monolog\Entity\MonologProfile;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -58,7 +56,7 @@ class MonologLoggerChannelFactory implements LoggerChannelFactoryInterface, Cont
    * {@inheritdoc}
    */
   public function addLogger(LoggerInterface $logger, $priority = 0) {
-    // No-op, we have handlers which are plugins and configured in the UI.
+    // No-op, we have handlers which are services and configured in the services.yml file.
   }
 
   /**
