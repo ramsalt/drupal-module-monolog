@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\monolog\MonologLoggingServiceProvider.
+ * Contains \Drupal\monolog\MonologServiceProvider.
  */
 
 namespace Drupal\monolog;
