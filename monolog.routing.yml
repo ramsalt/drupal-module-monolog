@@ -1,7 +1,0 @@
-monolog.admin_settings:
-  path: '/admin/config/development/monolog'
-  defaults:
-    _form: '\Drupal\monolog\Form\SettingsForm'
-    _title: 'Settings'
-  requirements:
-    _permission: 'administer site configuration'
