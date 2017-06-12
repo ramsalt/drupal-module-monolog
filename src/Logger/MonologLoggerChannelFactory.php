@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\Core\Logger\MonologLoggerChannelFactory.
- */
-
 namespace Drupal\monolog\Logger;
 
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;

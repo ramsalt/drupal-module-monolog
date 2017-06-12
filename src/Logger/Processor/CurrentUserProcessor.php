@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\monolog\Logger\Processor\CurrentUserProcessor.
- */
-
 namespace Drupal\monolog\Logger\Processor;
 
 use Drupal\Core\Session\AccountProxyInterface;

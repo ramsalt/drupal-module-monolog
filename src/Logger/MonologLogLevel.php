@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\monolog\Logger\MonologLogLevel.
- */
-
 namespace Drupal\monolog\Logger;
 
 use Drupal\Core\StringTranslation\TranslatableMarkup;

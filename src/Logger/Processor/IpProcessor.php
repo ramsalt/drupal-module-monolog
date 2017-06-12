@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\monolog\Logger\Processor\IpProcessor.
- */
-
 namespace Drupal\monolog\Logger\Processor;
 
 /**

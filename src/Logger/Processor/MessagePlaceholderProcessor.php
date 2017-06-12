@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\monolog\Logger\Processor\MessagePlaceholderProcessor.
- */
-
 namespace Drupal\monolog\Logger\Processor;
 
 use Drupal\Core\Logger\LogMessageParserInterface;

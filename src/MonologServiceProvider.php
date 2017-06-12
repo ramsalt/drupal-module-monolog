@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\monolog\MonologServiceProvider.
- */
-
 namespace Drupal\monolog;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;

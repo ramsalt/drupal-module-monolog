@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\Tests\monolog\Unit\Logger\LoggerTest.
- */
-
 namespace Drupal\Tests\monolog\Unit\Logger;
 
 use Drupal\Core\Logger\RfcLogLevel;
