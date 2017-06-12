@@ -56,6 +56,6 @@ services:
   monolog.processor.tag:
     class: Monolog\Processor\TagProcessor
   monolog.processor.uid:
-    class: Monolog\Processor\WebProcessor\UidProcessor
+    class: Monolog\Processor\UidProcessor
   monolog.processor.web:
     class: Monolog\Processor\WebProcessor
