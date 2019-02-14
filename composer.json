@@ -1,5 +1,5 @@
 {
-    "name": "drupal/monolog",
+    "name": "esolitos/monolog",
     "type": "drupal-module",
     "description": "A Framework and UI for integrating with the Monolog library.",
     "homepage": "http://drupal.org/project/monolog",
@@ -19,8 +19,11 @@
     "support": {
         "issues": "http://drupal.org/project/issues/monolog"
     },
+    "replace": {
+        "drupal/monolog": "*"
+    },
     "require": {
-        "monolog/monolog": ">=1.6.0,<2.0.0"
+        "monolog/monolog": "^2.0.0@beta"
     },
     "autoload": {
         "psr-0": {
