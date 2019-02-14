@@ -41,7 +41,7 @@ class DrupalHandler extends AbstractProcessingHandler {
   /**
    * {@inheritdoc}
    */
-  public function write(array $record) {
+  public function write(array $record): void {
     // Set up context with the data Drupal loggers expect.
     // @see Drupal\Core\Logger\LoggerChannel::log()
     $context = $record['context'] + [

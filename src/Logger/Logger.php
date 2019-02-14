@@ -38,12 +38,12 @@ class Logger extends BaseLogger implements LoggerChannelInterface {
   /**
    * {@inheritdoc}
    */
-  public function addRecord($level, $message, array $context = array()) {
+  public function addRecord(int $level, string $message, array $context = array()): bool {
     if (array_key_exists($level, $this->levelTranslation)) {
       $level = $this->levelTranslation[$level];
     }
 
-    parent::addRecord($level, $message, $context);
+    return parent::addRecord($level, $message, $context);
   }
 
   /**

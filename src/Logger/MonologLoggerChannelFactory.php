@@ -39,7 +39,7 @@ class MonologLoggerChannelFactory implements LoggerChannelFactoryInterface, Cont
       catch (\InvalidArgumentException $e) {
         $this->channels[$channel] = new NullLogger();
         if ($this->container->get('current_user')->hasPermission('administer site configuration')) {
-          drupal_set_message($e->getMessage(), 'error');
+          \Drupal::messenger()->addError($e->getMessage());
         }
       }
     }
@@ -81,10 +81,12 @@ class MonologLoggerChannelFactory implements LoggerChannelFactoryInterface, Cont
     $handlers = array_key_exists($channel_name, $parameters) ? $parameters[$channel_name] : $parameters['default'];
 
     foreach ($handlers as $handler) {
+      /** @noinspection PhpParamsInspection */
       $logger->pushHandler($this->container->get('monolog.handler.' . $handler));
     }
 
     foreach ($this->container->getParameter('monolog.processors') as $processor) {
+      /** @noinspection PhpParamsInspection */
       $logger->pushProcessor($this->container->get('monolog.processor.' . $processor));
     }
 
